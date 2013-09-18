@@ -14,6 +14,7 @@ class GenomicCoordinateException(Exception):
     def __str__(self):
         return "Genomic position is only 1-origin, given value of %d, %d were not accepted" % (self.start, self.end)
 
+
 class GenomicCoordinate(object):
     def __init__(self, start, end):
         self.start = start
