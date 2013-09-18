@@ -1,4 +1,3 @@
-
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
@@ -7,7 +6,6 @@ from Bio import SeqIO
 
 
 class GenomicCoordinateException(Exception):
-    
     def __init__(self, start, end):
         self.start = start
         self.end = end
@@ -16,7 +14,6 @@ class GenomicCoordinateException(Exception):
         return "Genomic position is only 1-origin, given value of %d, %d were not accepted" % (self.start, self.end)
 
 class SequenceIOException(Exception):
-    
     def __init__(self, file):
         self.file = file
         
@@ -25,9 +22,8 @@ class SequenceIOException(Exception):
 
 
 class SequenceIO(object):
-    
     def __init__(self, file='', circular=True):
-        # Error check
+
         if os.path.splitext(file)[1] != '.fasta':
             raise RuntimeError("Error: fasta format is only accepted")
         if not os.path.exists(file):
@@ -42,7 +38,13 @@ class SequenceIO(object):
         for i in record.seq:
             self.rec.append([i])
         return self.rec
-
+    
+    def insert_sequence(self, start, end, original_seq, insert_seq):
+        pre = original_seq[0:start]
+        post = original_seq[start:end]
+        self.inesrt = pre + insert_seq + post
+        return self.insert
+        
     def sequence_file_name(self):
         return self.seq
     
@@ -67,7 +69,6 @@ class SequenceIO(object):
         
 
 class GenomicCoordinate(object):
-    
     def __init__(self, start, end):
         self.start = start
         self.end = end
@@ -107,15 +108,12 @@ class GenomicCoordinate(object):
         elif self.start > self.length:
             return ''
 
-
-    def map_sequence_region_to_genome(self):
+    def map_attribute_to_genome(self):
         pass
+
     
-
-
 
 class GenomicAttribute(object):
-    
     def __init__(self, start='', end=''):
         self.start = start
         self.end = end
@@ -128,7 +126,3 @@ class GenomicAttribute(object):
 
     def get_gene_annotation_from_position(self):
         pass
-
-
-    
-
