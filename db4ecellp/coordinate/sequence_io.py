@@ -39,16 +39,15 @@ class SequenceIO(object):
     def read_sequence(self):
         record = SeqIO.read(self.seq, "fasta")
         self.rec = []
-
         for i in record.seq:
             self.rec.append([i])
         return self.rec
 
-    def is_valid_sequence(self):
-        pass
-
     def sequence_file_name(self):
         return self.seq
+    
+    def fasta_header(self):
+        pass
 
     def print_sequence(self, all=False):
         limit = 5000
@@ -59,7 +58,7 @@ class SequenceIO(object):
                 concentrated_seq += str(s[0])
             return concentrated_seq
             
-        else:
+        elif not all:
             for index, seq in enumerate(self.rec):
                 concentrated_seq += str(seq[0])
                 if index > limit:
@@ -67,22 +66,52 @@ class SequenceIO(object):
             return concentrated_seq
         
 
-class GenomicCoordinate(SequenceIO):
+class GenomicCoordinate(object):
     
-    def __init__(self):
-        SequenceIO.__init__(self)
-        
-    def is_circular(self):
-        pass
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
 
+    def is_circular(self):
+        return self.start
+    
     def seq_name(self):
         return self.fasta
 
-    def get_sequence_region_from_genome(self):
-        pass
+    def get_sequence_region_from_circular(self):
+        if self.start > self.end:
+            return self.sequence[self.start-1:self.end]
+
+        elif self.end < self.start:
+            return self.sequence[self.start:self.length % self.end]
+            
+        elif self.start > 0 and self.end > 0:
+            return self.sequence[self.start-1:self.end]
+
+        elif self.start > 0 and self.end < 0:
+            return self.sequence[self.start-1:self.length-abs(self.end)]
+
+        elif self.start < 0 and self.end > 0:
+            return self.sequence[self.start-1:self.length-abs(self.end)]
+            
+        elif self.start < 0 and self.end < 0:
+            return self.sequence[self.length-abs(end):self.length-abs(self.start)]
+        
+    def get_sequence_region_from_linear(self):
+        if self.start > 0 and self.end > 0:
+            return self.sequence[self.start-1:self.end]
+
+        elif self.start > 0 and self.end > self.length:
+            return self.sequence[self.start-1:self.length]
+            
+        elif self.start > self.length:
+            return ''
+
 
     def map_sequence_region_to_genome(self):
         pass
+    
+
 
 
 class GenomicAttribute(object):
