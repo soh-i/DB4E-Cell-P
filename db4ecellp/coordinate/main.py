@@ -1,18 +1,31 @@
 #!/usr/bin/python 
 
 from sequence_io import SequenceIO
-from sequence_io import GenomicCoordinate
-from sequence_io import GenomicAttribute
+from genomic_coordinate import GenomicCoordinate
+from genomic_attribute import GenomicAttribute
 
-seq_file = '../../data/seq.fasta'
-seq_io = SequenceIO(seq=seq_file, circular=True)
-print seq_io.sequence_file_name()
-genomic_array = seq_io.generate_genomic_array()
+def test_sequence_io_class():
+    seq_file = '../../data/seq.fasta'
+    seq_io = SequenceIO(file=seq_file, circular=True)
+    print "fasta_header() is called, %s" %(seq_io.fasta_header())
+
+    genomic_array = seq_io.read_sequence()
+    print "read_sequence() is called"
+
+    print "print_sequence() is called, %s" %(seq_io.print_sequence(all=False))
+    print "sequence_file_name() is called, %s" %(seq_io.sequence_file_name())
+    print "get_complement_seq() is called, %s" %(seq_io.get_complement_seq())
+    print "get_reverse_complement_seq() is called, %s" %(seq_io.get_reverse_complement_seq())
+
+def test_genomic_coordinate_class():
+    pass
+
+def test_genomic_attribute_class():
+    pass
 
 
-#print seq_io.seq_name()
-#print seq_io.get_sequence_region_from_genome(start=1, end=200)
-#print seq_io.get_gene_annotation_from_position(start=1, end=200)
+if __name__ == '__main__':
+    test_sequence_io_class()
 
 
 
