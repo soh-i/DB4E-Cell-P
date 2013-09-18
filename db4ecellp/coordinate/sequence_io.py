@@ -3,8 +3,11 @@ __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
 import os.path
+from Bio import SeqIO
+
 
 class GenomicCoordinateException(Exception):
+    
     def __init__(self, start, end):
         self.start = start
         self.end = end
@@ -12,9 +15,19 @@ class GenomicCoordinateException(Exception):
     def __str__(self):
         return "Genomic position is only 1-origin, given value of %d, %d were not accepted" % (self.start, self.end)
 
+class SequenceIOException(Exception):
+    
+    def __init__(self, file):
+        self.file = file
+        
+    def __str__(self):
+        return ""
+
 
 class SequenceIO(object):
+    
     def __init__(self, file='', circular=True):
+        # Error check
         if os.path.splitext(file)[1] != '.fasta':
             raise RuntimeError("Error: fasta format is only accepted")
         if not os.path.exists(file):
@@ -23,10 +36,7 @@ class SequenceIO(object):
         self.seq = file
         self.circular = circular # default: circular genome
     
-    def generate_genomic_array(self):
-        
-        from Bio import SeqIO
-        
+    def read_sequence(self):
         record = SeqIO.read(self.seq, "fasta")
         self.rec = []
 
@@ -40,11 +50,25 @@ class SequenceIO(object):
     def sequence_file_name(self):
         return self.seq
 
-    def write_sequence(self):
-        pass
-
+    def print_sequence(self, all=False):
+        limit = 5000
+        concentrated_seq = ''
+        
+        if all:
+            for s in self.rec:
+                concentrated_seq += str(s[0])
+            return concentrated_seq
+            
+        else:
+            for index, seq in enumerate(self.rec):
+                concentrated_seq += str(seq[0])
+                if index > limit:
+                    break
+            return concentrated_seq
+        
 
 class GenomicCoordinate(SequenceIO):
+    
     def __init__(self):
         SequenceIO.__init__(self)
         
@@ -62,6 +86,7 @@ class GenomicCoordinate(SequenceIO):
 
 
 class GenomicAttribute(object):
+    
     def __init__(self, start='', end=''):
         self.start = start
         self.end = end
