@@ -1,26 +1,40 @@
 #!/usr/bin/env python
 
-__author__ = 'Kazuki Oshita <cory@g-language.org>'
+__author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
+__version__ = '0.0.1'
 
 import sys
 
-from species import species
+from db_schema import Species
+
+
+
+"""
+
+engine = create_engine('sqlite:///:memory', echo=False)
+metadata.create_all(engine)
+Session = sessionmaker()
+    
+Session.configure(bind=engine)
+session = Session()
+
+with open("data/CDS_annotation.tbl", "r") as f:
+    for line in f:
+        (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+        obj = species.CDS(name, strand, start, end, feature, sequence)
+        session.add(obj)
+
+session.commit()
+
 
 def generate_db():
-    # for debugging, please set echo=True
-    engine = species.create_engine('sqlite:///db/ecli.db', echo=False)
-
-    # create table to DB
+    
+    engine = species.create_engine('sqlite:///:memory', echo=False)
     species.metadata.create_all(engine)
-
-    # create session object
     Session = species.sessionmaker()
+    
     Session.configure(bind=engine)
-
-    # session start!
     session = Session()
-
-    # data registration to sqlite3
 
     with open("data/CDS_annotation.tbl", "r") as f:
         for line in f:
@@ -51,5 +65,7 @@ def generate_db():
             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
             obj = species.Terminator(name, strand, start, end, feature, sequence)
             session.add(obj)
-
+            
     session.commit()
+
+"""
