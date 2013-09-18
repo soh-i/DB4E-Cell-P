@@ -7,14 +7,6 @@ import os.path
 from Bio import SeqIO
 
 
-class GenomicCoordinateException(Exception):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-
-    def __str__(self):
-        return "Genomic position is only 1-origin, given value of %d, %d were not accepted" % (self.start, self.end)
-
 class SequenceIOException(Exception):
     def __init__(self, file):
         self.file = file
@@ -73,7 +65,9 @@ class SequenceIO(object):
         return self.rev_seq
         
     def get_reverse_complement_seq(self):
-        pass
+        self.rev_comp_seq = []
+        record = SeqIO.read(self.seq, 'fasta')
+        return self.rev_comp_seq
 
     def print_sequence(self, all=False):
         limit = 100
@@ -91,81 +85,5 @@ class SequenceIO(object):
                     break
             return concentrated_seq
         
-
-class GenomicCoordinate(object):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-
-    def is_circular(self):
-        return self.start
-    
-    def seq_name(self):
-        return self.fasta
-
-    def get_sequence_region_from_circular(self):
-        if self.start > self.end:
-            return self.sequence[self.start-1:self.end]
-
-        elif self.end < self.start:
-            return self.sequence[self.start:self.length % self.end]
-            
-        elif self.start > 0 and self.end > 0:
-            return self.sequence[self.start-1:self.end]
-
-        elif self.start > 0 and self.end < 0:
-            return self.sequence[self.start-1:self.length-abs(self.end)]
-
-        elif self.start < 0 and self.end > 0:
-            return self.sequence[self.start-1:self.length-abs(self.end)]
-            
-        elif self.start < 0 and self.end < 0:
-            return self.sequence[self.length-abs(end):self.length-abs(self.start)]
-        
-    def get_sequence_region_from_linear(self):
-        if self.start > 0 and self.end > 0:
-            return self.sequence[self.start-1:self.end]
-
-        elif self.start > 0 and self.end > self.length:
-            return self.sequence[self.start-1:self.length]
-            
-        elif self.start > self.length:
-            return ''
-
-    def map_attribute_to_genome(self):
-        pass
-
-
-class GenomicAttribute(object):
-    def __init__(self, start='', end=''):
-        self.start = start
-        self.end = end
-
-    def get_gene_seq(self):
-        pass
-
-    def get_gene_name(self):
-        pass
-
-    def get_gene_annotation_from_position(self):
-        pass
-
-    def find_all_gene_names(self):
-        pass
-
-    def find_all_cds(self):
-        pass
-
-    def is_strand(self):
-        pass
-
-    def is_circular(self):
-        pass
-
-    def size_of_genome(self):
-        pass
-
-    def is_traslated(self):
-        pass
 
 
