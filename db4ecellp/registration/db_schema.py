@@ -6,10 +6,10 @@ __version__ = '0.0.2'
 from sqlalchemy import *
 from sqlalchemy.orm import mapper, sessionmaker
 
-# Metadata entity collection
 metadata = MetaData()
 
 class Species(object):
+    
     __tablename__ = 'Species'
     
     def __init__(self, name, strand, start, end, feature, sequence):
