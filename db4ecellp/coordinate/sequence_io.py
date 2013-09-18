@@ -49,7 +49,8 @@ class SequenceIO(object):
         return self.seq
     
     def fasta_header(self):
-        pass
+        record = SeqIO.read(self.seq, "fasta")
+        return record.id
 
     def print_sequence(self, all=False):
         limit = 5000
