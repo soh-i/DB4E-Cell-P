@@ -1,6 +1,8 @@
+
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
+import string
 import os.path
 from Bio import SeqIO
 
@@ -39,7 +41,7 @@ class SequenceIO(object):
             self.rec.append([i])
         return self.rec
     
-    def insert_sequence(self, start, end, original_seq, insert_seq):
+    def insert_sequence(self, start, original_seq, insert_seq):
         pre = original_seq[0:start]
         post = original_seq[start:end]
         self.inesrt = pre + insert_seq + post
@@ -52,15 +54,36 @@ class SequenceIO(object):
         record = SeqIO.read(self.seq, "fasta")
         return record.id
 
+    def get_complement_seq(self):
+        self.rev_seq = []
+        record = SeqIO.read(self.seq, 'fasta')
+        
+        for nuc in record.seq:
+            if nuc == 'A' or nuc == 'a':
+                self.rev_seq.append(['T'])
+            elif nuc == 'T' or nuc == 't':
+                self.rev_seq.append(['A'])
+            elif nuc == 'G' or nuc == 'g':
+                self.rev_seq.append(['C'])
+            elif nuc == 'C' or nuc == 'c':
+                self.rev_seq.append(['G'])
+            elif nuc == 'n' or nuc == 'N':
+                self.rev_seq.append(['n'])
+                
+        return self.rev_seq
+        
+    def get_reverse_complement_seq(self):
+        pass
+
     def print_sequence(self, all=False):
-        limit = 5000
+        limit = 100
         concentrated_seq = ''
         
         if all:
             for s in self.rec:
                 concentrated_seq += str(s[0])
             return concentrated_seq
-            
+   
         elif not all:
             for index, seq in enumerate(self.rec):
                 concentrated_seq += str(seq[0])
@@ -112,7 +135,6 @@ class GenomicCoordinate(object):
     def map_attribute_to_genome(self):
         pass
 
-    
 
 class GenomicAttribute(object):
     def __init__(self, start='', end=''):
@@ -127,3 +149,23 @@ class GenomicAttribute(object):
 
     def get_gene_annotation_from_position(self):
         pass
+
+    def find_all_gene_names(self):
+        pass
+
+    def find_all_cds(self):
+        pass
+
+    def is_strand(self):
+        pass
+
+    def is_circular(self):
+        pass
+
+    def size_of_genome(self):
+        pass
+
+    def is_traslated(self):
+        pass
+
+
