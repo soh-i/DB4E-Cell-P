@@ -2,6 +2,7 @@
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
+import os.path
 
 class GenomicCoordinateException(Exception):
     def __init__(self, start, end):
@@ -13,12 +14,15 @@ class GenomicCoordinateException(Exception):
 
 
 class SequenceIO(object):
-    def __init__(self, fasta):
-        self.fasta = fasta
+    def __init__(self, file='', circular=True):
+        if os.path.splitext(file)[1] != '.fasta':
+            raise RuntimeError("Error: fasta format is only accepted")
+        if not os.path.exists(file):
+            raise RuntimeError("Error: given file is not found")
+            
+        self.seq = file
+        self.circular = circular # default: circular genome
     
-    def is_valid_sequence(self):
-        pass
-
     def generate_genomic_array(self):
         
         from Bio import SeqIO
@@ -29,6 +33,12 @@ class SequenceIO(object):
         for i in record.seq:
             self.rec.append([i])
         return self.rec
+
+    def is_valid_sequence(self):
+        pass
+
+    def sequence_file_name(self):
+        return self.seq
 
     def write_sequence(self):
         pass
@@ -52,8 +62,9 @@ class GenomicCoordinate(SequenceIO):
 
 
 class GenomicAttribute(object):
-    def __init__(self):
-        pass
+    def __init__(self, start='', end=''):
+        self.start = start
+        self.end = end
 
     def get_gene_seq(self):
         pass
