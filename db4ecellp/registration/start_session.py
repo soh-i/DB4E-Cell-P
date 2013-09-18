@@ -4,19 +4,15 @@ __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
 import sys
-
+from sqlalchemy import *
+from sqlalchemy.orm import mapper, sessionmaker
 from db_schema import Species
 
-
-
-"""
-
 engine = create_engine('sqlite:///:memory', echo=False)
-metadata.create_all(engine)
 Session = sessionmaker()
-    
 Session.configure(bind=engine)
 session = Session()
+
 
 with open("data/CDS_annotation.tbl", "r") as f:
     for line in f:
@@ -27,6 +23,7 @@ with open("data/CDS_annotation.tbl", "r") as f:
 session.commit()
 
 
+"""
 def generate_db():
     
     engine = species.create_engine('sqlite:///:memory', echo=False)
