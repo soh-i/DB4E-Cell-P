@@ -14,7 +14,7 @@ class Species(object):
     
     def __init__(self, name, strand, start, end, feature, sequence):
         self.name = name
-        self.strand = strand
+        self.strand = int(strand)
         self.start = int(start)
         self.end = int(end)
         self.feature = feature
@@ -27,7 +27,7 @@ class Species(object):
 species_table = Table('species', metadata,
                       Column('id', Integer, primary_key=True),
                       Column('name', String),
-                      Column('strand', String),                      
+                      Column('strand', Interger),
                       Column('start', Integer),
                       Column('end',  Integer),
                       Column('feature', String),
