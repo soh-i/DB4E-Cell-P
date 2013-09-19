@@ -2,21 +2,18 @@
 
 from session import Mapper, Query
 
-
 def query_test():
 
-    # create Mapper class object
+    # create Mapper class object (generating DB)
     query = Query()
-    print "Mapping CDS table to DB is finished..."
+        
+    #print query.count_stored_records()
+    #print query.collect_cds_records()
+    print query.find_by_name('thrL')
+    #print query.find_by_name('glyW')
+    #print query.collect_annotations_filter_by_strand(-1)
     
-    #print mapper.retrieve_all_records()
-    #print mapper.query_by_all_cds()
-    #print mapper.query_by_gene_name('thrL')
-    #print mapper.query_by_region(189, 12255)
-    #print mapper.query_by_region_with_gene(1,3010)
-    #print mapper.query_by_region_with_seq(1,3010)
-    #print mapper.collect_all_annotations_by_strand(1)
-    print query.include_gene_in_region(21, 2012)
+    #print query.include_gene_in_region(21, 2012)
 
 
 if __name__ == '__main__':
