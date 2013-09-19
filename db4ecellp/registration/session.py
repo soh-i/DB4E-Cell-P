@@ -76,10 +76,10 @@ class Query(Mapper):
             names.append(record.name)
         return names
 
-    def find_gene_by_name(self, gene_name):
-        for name in self.session.query(species.CDS, species.tRNA).filter_by(name=gene_name):
-            return name
-    
+    def find_by_name(self, gene_name):
+        for rec in self.session.query(species.CDS).filter_by(name=gene_name):
+            return rec
+            
     def collect_annotations_filter_by_strand(self, strand):
         filt_recs = []
         if strand == 1 or strand == -1:
