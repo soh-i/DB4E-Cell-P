@@ -24,23 +24,24 @@ class Mapper(object):
                 self.session.add(obj)
         self.session.commit()
 
-    def get_all_records(self):
+    def retrieve_all_records(self):
         all_rec = []
         for row in self.session.query(species.CDS).all():
             all_rec.append(row)
         return all_rec
             
-    def query_by_name(self):
+    def query_by_all_cds(self):
         for record in self.session.query(species.CDS).order_by(species.CDS.name):
             return record.name
 
-    def query_by_region(self):
-        pass
+    def query_by_region(self, start, end):
+        for record in self.session.query(species.CDS).filter(species.CDS.start <= start).filter(species.CDS.end >= end):
+            return record
 
     def query_by_region_with_strand(self):
         pass
     
-    def filter_by_name(self, gene_name):
+    def query_by_gene_name(self, gene_name):
         for name in self.session.query(species.CDS).filter_by(name=gene_name):
             return name
 
@@ -49,50 +50,12 @@ if __name__ == '__main__':
     mapper.mapping_CDS()
     print "Mapping CDS table to DB is finished"
     
-    #print mapper.get_all_records()
-    print mapper.filter_by_name('thrL')
+    #print mapper.retrieve_all_records()
+    #print mapper.query_by_all_cds()
+    print mapper.query_by_gene_name('thrL')
+    print mapper.query_by_region(189, 255)
+                
+
+
+
     
-
-"""
-def generate_db():
-    
-    engine = species.create_engine('sqlite:///:memory', echo=False)
-    species.metadata.create_all(engine)
-    Session = species.sessionmaker()
-    
-    Session.configure(bind=engine)
-    session = Session()
-
-    with open("data/CDS_annotation.tbl", "r") as f:
-        for line in f:
-            (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-            obj = species.CDS(name, strand, start, end, feature, sequence)
-            session.add(obj)
-
-    with open("data/rRNA_annotation.tbl", "r") as f:
-        for line in f:
-            (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-            obj = species.rRNA(name, strand, start, end, feature, sequence)
-            session.add(obj)
-
-    with open("data/tRNA_annotation.tbl", "r") as f:
-        for line in f:
-            (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-            obj = species.tRNA(name, strand, start, end, feature, sequence)
-            session.add(obj)
-
-    with open("data/promoter_annotation.tbl", "r") as f:
-        for line in f:
-            (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-            obj = species.Promoter(name, strand, start, end, feature, sequence)
-            session.add(obj)
-
-    with open("data/terminator_annotation.tbl", "r") as f:
-        for line in f:
-            (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-            obj = species.Terminator(name, strand, start, end, feature, sequence)
-            session.add(obj)
-            
-    session.commit()
-
-"""
