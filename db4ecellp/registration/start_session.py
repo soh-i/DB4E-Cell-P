@@ -15,7 +15,7 @@ class Mapper(object):
         self.Session.configure(bind=self.engine)
         self.session = self.Session()
 
-    def mapping_CDS(self):
+    def __mapping_CDS(self):
         with open("../../data/CDS_annotation.tbl", "r") as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
@@ -23,6 +23,28 @@ class Mapper(object):
                 self.session.add(obj)
         self.session.commit()
 
+    def __map_tRNA(self):
+        pass
+
+    def __map_rRNA(self):
+        pass
+
+    def __map_promoter(self):
+        pass
+
+    def __map_terminater(self):
+        pass
+    
+    def generate_db(self):
+        self.__mapping_CDS()
+
+
+class Query(Mapper):
+
+    def __init__(self):
+        Mapper.__init__(self)
+        self.generate_db()
+        
     def count_stored_records(self):
         return self.session.query(species.CDS).filter(species.CDS.start).count()
 
@@ -46,8 +68,10 @@ class Mapper(object):
             raise ValueError
             
     def collec_all_gene_name(self):
+        names = []
         for record in self.session.query(species.CDS).order_by(species.CDS.name):
-            return record.name
+            names.append(record.name)
+        return names
 
     def include_record_in_region(self, start, end):
         records = []
@@ -70,10 +94,7 @@ class Mapper(object):
     
 if __name__ == '__main__':
     # create Mapper class object
-    mapper = Mapper()
-    
-    # Map CDS table to db
-    mapper.mapping_CDS()
+    query = Query()
     
     #print "Mapping CDS table to DB is finished"
     
@@ -84,6 +105,6 @@ if __name__ == '__main__':
     #print mapper.query_by_region_with_gene(1,3010)
     #print mapper.query_by_region_with_seq(1,3010)
     #print mapper.collect_all_annotations_by_strand(1)
-    print mapper.count_stored_records()
+    print query.include_seq_in_region(21, 2012)
 
 
