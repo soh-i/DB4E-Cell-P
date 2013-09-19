@@ -23,6 +23,9 @@ class Mapper(object):
                 self.session.add(obj)
         self.session.commit()
 
+    def count_stored_records(self):
+        return self.session.query(species.CDS).filter(species.CDS.start).count()
+
     def collect_all_records(self):
         all_rec = []
         for row in self.session.query(species.CDS).all():
@@ -80,6 +83,7 @@ if __name__ == '__main__':
     #print mapper.query_by_region(189, 12255)
     #print mapper.query_by_region_with_gene(1,3010)
     #print mapper.query_by_region_with_seq(1,3010)
-    print mapper.collect_all_annotations_by_strand(1)
+    #print mapper.collect_all_annotations_by_strand(1)
+    print mapper.count_stored_records()
 
 
