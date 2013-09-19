@@ -27,7 +27,7 @@ class Species(object):
 species_table = Table('species', metadata,
                       Column('id', Integer, primary_key=True),
                       Column('name', String),
-                      Column('strand', Interger),
+                      Column('strand', Integer),
                       Column('start', Integer),
                       Column('end',  Integer),
                       Column('feature', String),
