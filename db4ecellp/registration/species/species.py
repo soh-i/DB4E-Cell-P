@@ -70,7 +70,7 @@ trna_table = Table('trna', metadata,
 )
 mapper(Species, species_table)
 mapper(CDS, cds_table)
-mapper(tRNA, tRNA_table)
+mapper(tRNA, trna_table)
 
 
 """
