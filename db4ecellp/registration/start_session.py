@@ -7,9 +7,10 @@ from species import species
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+
 class Mapper(object):
     def __init__(self):
-        self.engine = species.create_engine('sqlite:///:memory:', echo=True)
+        self.engine = species.create_engine('sqlite:///:memory:', echo=False)
         species.metadata.create_all(self.engine)
         self.Session = species.sessionmaker()
         self.Session.configure(bind=self.engine)
@@ -23,10 +24,34 @@ class Mapper(object):
                 self.session.add(obj)
         self.session.commit()
 
+    def get_all_records(self):
+        all_rec = []
+        for row in self.session.query(species.CDS).all():
+            all_rec.append(row)
+        return all_rec
+            
+    def query_by_name(self):
+        for record in self.session.query(species.CDS).order_by(species.CDS.name):
+            return record.name
+
+    def query_by_region(self):
+        pass
+
+    def query_by_region_with_strand(self):
+        pass
+    
+    def filter_by_name(self, gene_name):
+        for name in self.session.query(species.CDS).filter_by(name=gene_name):
+            return name
+
 if __name__ == '__main__':
     mapper = Mapper()
     mapper.mapping_CDS()
-
+    print "Mapping CDS table to DB is finished"
+    
+    #print mapper.get_all_records()
+    print mapper.filter_by_name('thrL')
+    
 
 """
 def generate_db():
