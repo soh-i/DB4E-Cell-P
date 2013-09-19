@@ -4,7 +4,7 @@ __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
 from species import species
-from sqlalchemy import create_engine
+from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 
 
@@ -35,9 +35,11 @@ class Mapper(object):
             return record.name
 
     def query_by_region(self, start, end):
-        for record in self.session.query(species.CDS).filter(species.CDS.start <= start).filter(species.CDS.end >= end):
-            return record
-
+        records = []
+        for record in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
+            records.append(record)
+        return records
+        
     def query_by_region_with_strand(self):
         pass
     
@@ -52,8 +54,8 @@ if __name__ == '__main__':
     
     #print mapper.retrieve_all_records()
     #print mapper.query_by_all_cds()
-    print mapper.query_by_gene_name('thrL')
-    print mapper.query_by_region(189, 255)
+    #print mapper.query_by_gene_name('thrL')
+    print mapper.query_by_region(189, 12255)
                 
 
 
