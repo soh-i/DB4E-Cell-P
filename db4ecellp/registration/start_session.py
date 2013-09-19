@@ -7,20 +7,25 @@ from species import species
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = species.create_engine('sqlite:///:memory:', echo=False)
-species.metadata.create_all(engine)
-Session = species.sessionmaker()
-Session.configure(bind=engine)
-session = Session()
+class Mapper(object):
+    def __init__(self):
+        self.engine = species.create_engine('sqlite:///:memory:', echo=True)
+        species.metadata.create_all(self.engine)
+        self.Session = species.sessionmaker()
+        self.Session.configure(bind=self.engine)
+        self.session = self.Session()
 
-with open("../../data/CDS_annotation.tbl", "r") as f:
-    for line in f:
-        (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-        obj = species.CDS(name, strand, start, end, feature, sequence)
-        session.add(obj)
+    def mapping_CDS(self):
+        with open("../../data/CDS_annotation.tbl", "r") as f:
+            for line in f:
+                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+                obj = species.CDS(name, strand, start, end, feature, sequence)
+                self.session.add(obj)
+        self.session.commit()
 
-session.commit()
-
+if __name__ == '__main__':
+    mapper = Mapper()
+    mapper.mapping_CDS()
 
 
 """
