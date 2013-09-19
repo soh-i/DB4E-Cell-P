@@ -1,15 +1,17 @@
-#!/usr/bin/env python
-
-__author__ = 'Soh Ishiguro <t10078si@sfc.kei.ac.jp'
+__program__ = 'session'
 __version__ = '0.0.1'
+__author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
+__copyright__ = ''
+__license__ = ''
+
 
 from sqlalchemy import *
 from sqlalchemy.orm import mapper, sessionmaker
 
 
 metadata = MetaData()
+
 class Species(object):
-    
     __tablename__ = 'species'
     
     def __init__(self, name, strand, start, end, feature, sequence):
@@ -21,8 +23,8 @@ class Species(object):
         self.sequence = sequence
 
     def __repr__(self):
-        return "<Species('%s','%s','%d','%d','%s','%s')>" % \
-            (self.name, self.strand, self.start, self.end, self.feature, self.sequence)
+        return "<Species('%s','%s','%d','%d','%s','%s')>" % (
+            self.name, self.strand, self.start, self.end, self.feature, self.sequence)
 
 species_table = Table('species', metadata,
                       Column('id', Integer, primary_key=True),
@@ -35,6 +37,7 @@ species_table = Table('species', metadata,
                       sqlite_autoincrement=True
 )
 
+
 class CDS(Species):
     def __init__(self, name, strand, start, end, feature, sequence):
         Species.__init__(self, name, strand, start, end, feature, sequence)
@@ -42,7 +45,7 @@ class CDS(Species):
 cds_table = Table('cds', metadata,
                   Column('id',       Integer, primary_key=True),
                   Column('name',     String),
-                  Column('strand',   String),                      
+                  Column('strand',   Integer),
                   Column('start',    Integer),
                   Column('end',      Integer),
                   Column('feature',  String),
@@ -50,8 +53,25 @@ cds_table = Table('cds', metadata,
                   sqlite_autoincrement=True
 )
 
+
+class tRNA(Species):
+    def __init__(self, name, strand, start, end, feature, sequence):
+        Species.__init__(self, name, strand, start, end, feature, sequence)
+
+trna_table = Table('trna', metadata,
+                   Column('id',       Integer,primary_key=True),
+                   Column('name',     String),
+                   Column('strand',   Integer),
+                   Column('start',    Integer),
+                   Column('end',      Integer),
+                   Column('feature',  String),
+                   Column('sequence', String),
+                   sqlite_autoincrement=True
+)
 mapper(Species, species_table)
 mapper(CDS, cds_table)
+mapper(tRNA, tRNA_table)
+
 
 """
 class rRNA(Species):
@@ -59,21 +79,6 @@ class rRNA(Species):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
     rRNA_table = Table('rrna', metadata,
-                       Column('id',       Integer, primary_key=True),
-                       Column('name',     String),
-                       Column('strand',   String),                      
-                       Column('start',    Integer),
-                       Column('end',      Integer),
-                       Column('feature',  String),
-                       Column('sequence', String),
-                       sqlite_autoincrement=True
-                   )
-
-class tRNA(Species):
-    def __init__(self, name, strand, start, end, feature, sequence):
-        Species.__init__(self, name, strand, start, end, feature, sequence)
-
-    tRNA_table = Table('trna', metadata,
                        Column('id',       Integer, primary_key=True),
                        Column('name',     String),
                        Column('strand',   String),                      
