@@ -23,42 +23,48 @@ class Mapper(object):
                 self.session.add(obj)
         self.session.commit()
 
-    def retrieve_all_records(self):
+    def collect_all_records(self):
         all_rec = []
         for row in self.session.query(species.CDS).all():
             all_rec.append(row)
         return all_rec
+
+    def collect_gene_by_name(self, gene_name):
+        for name in self.session.query(species.CDS).filter_by(name=gene_name):
+            return name
+    
+    def collect_all_annotations_by_strand(self, strand):
+        filt_recs = []
+        if strand == 1 or strand == -1:
+            for rec in self.session.query(species.CDS).filter_by(strand=strand):
+                filt_recs.append(rec)
+            return filt_recs
+        else:
+            raise ValueError
             
-    def query_by_all_cds(self):
+    def collec_all_gene_name(self):
         for record in self.session.query(species.CDS).order_by(species.CDS.name):
             return record.name
 
-    def query_by_region(self, start, end):
+    def include_record_in_region(self, start, end):
         records = []
         for record in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
             records.append(record)
         return records
 
-    def query_by_region_with_gene(self, start, end):
+    def include_gene_in_region(self, start, end):
         genes = []
         for gene in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
             genes.append(gene.name)
         return genes
         
-    def query_by_region_with_seq(self):
+    def include_seq_in_region(self, start, end):
         seq = []
         for s in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
             seq.append(s.sequence)
         return seq
-        
-    def query_by_region_with_strand(self):
-        pass
+
     
-    def query_by_gene_name(self, gene_name):
-        for name in self.session.query(species.CDS).filter_by(name=gene_name):
-            return name
-
-
 if __name__ == '__main__':
     # create Mapper class object
     mapper = Mapper()
@@ -66,15 +72,14 @@ if __name__ == '__main__':
     # Map CDS table to db
     mapper.mapping_CDS()
     
-    
     #print "Mapping CDS table to DB is finished"
     
     #print mapper.retrieve_all_records()
     #print mapper.query_by_all_cds()
     #print mapper.query_by_gene_name('thrL')
     #print mapper.query_by_region(189, 12255)
-    print mapper.query_by_region_with_gene(189,3010)
+    #print mapper.query_by_region_with_gene(1,3010)
+    #print mapper.query_by_region_with_seq(1,3010)
+    print mapper.collect_all_annotations_by_strand(1)
 
 
-
-    
