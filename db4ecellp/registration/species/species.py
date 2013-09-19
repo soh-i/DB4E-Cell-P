@@ -49,6 +49,7 @@ cds_table = Table('cds', metadata,
                   Column('sequence', String),
                   sqlite_autoincrement=True
 )
+
 mapper(Species, species_table)
 mapper(CDS, cds_table)
 
