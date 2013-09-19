@@ -34,20 +34,20 @@ class Mapper(object):
         self.session.commit()
 
     def __mapping_tRNA(self):
-        with open('../../data/CDS_annotation.tbl', 'r') as f:
+        with open('../../data/tRNA_annotation.tbl', 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.tRNA(name, strand, start, end, feature, sequence)
                 self.session.add(obj)
         self.session.commit()
 
-    def __map_rRNA(self):
+    def __mapping_rRNA(self):
         pass
 
-    def __map_promoter(self):
+    def __mapping_promoter(self):
         pass
 
-    def __map_terminater(self):
+    def __mapping_terminater(self):
         pass
     
     def generate_db(self):
@@ -64,7 +64,7 @@ class Query(Mapper):
     def count_stored_records(self):
         return self.session.query(species.CDS).filter(species.CDS.start).count()
 
-    def collect_all_records(self):
+    def collect_cds_records(self):
         all_rec = []
         for row in self.session.query(species.CDS).all():
             all_rec.append(row)
@@ -77,7 +77,7 @@ class Query(Mapper):
         return names
 
     def find_gene_by_name(self, gene_name):
-        for name in self.session.query(species.CDS).filter_by(name=gene_name):
+        for name in self.session.query(species.CDS, species.tRNA).filter_by(name=gene_name):
             return name
     
     def collect_annotations_filter_by_strand(self, strand):
