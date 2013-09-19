@@ -3,24 +3,24 @@
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __version__ = '0.0.1'
 
-import sys
-from sqlalchemy import *
-from sqlalchemy.orm import mapper, sessionmaker
-from db_schema import Species
+from species import species
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///:memory', echo=False)
-Session = sessionmaker()
+engine = species.create_engine('sqlite:///:memory:', echo=False)
+species.metadata.create_all(engine)
+Session = species.sessionmaker()
 Session.configure(bind=engine)
 session = Session()
 
-
-with open("data/CDS_annotation.tbl", "r") as f:
+with open("../../data/CDS_annotation.tbl", "r") as f:
     for line in f:
         (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
         obj = species.CDS(name, strand, start, end, feature, sequence)
         session.add(obj)
 
 session.commit()
+
 
 
 """
