@@ -65,3 +65,30 @@ class Genbank(DataInitializer):
 
                     trna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
 
+
+class Promoter(DataInitializer):
+    def __init__(self):
+        DataInitializer.__init__(self)
+
+    def generate_annotation_files(promoter_file):
+
+        output_file = open('../../data/promoter_annotation.tbl','w');
+
+        for line in open(promoter_file, 'r'):
+            if (line.isspace()):
+                continue
+
+            line = line.rstrip()
+            if not re.match('^#',line):
+                lineArray = line.split("\t")
+            
+                if not len(lineArray) == 7 :
+                    continue
+
+                if lineArray[2] in "forward":
+                    text = "\t".join([ lineArray[0],"1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
+                    output_file.write(text + "\n")
+
+                else:
+                    text =  "\t".join([ lineArray[0],"-1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
+                    output_file.write(text + "\n")
