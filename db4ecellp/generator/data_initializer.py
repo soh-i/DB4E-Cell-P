@@ -1,4 +1,4 @@
-__program__ = 'data_generator'
+__program__ = 'data_initializer'
 __version__ = '0.0.1'
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __copyright__ = ''
