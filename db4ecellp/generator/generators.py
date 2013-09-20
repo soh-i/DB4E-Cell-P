@@ -126,6 +126,7 @@ class Terminator(DataInitializer):
                     text = "\t".join([lineArray[0],"-1",lineArray[1],lineArray[2],"terminator",lineArray[4] ])
                     output_file.write(text + "\n")
 
+
 class Operon(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
