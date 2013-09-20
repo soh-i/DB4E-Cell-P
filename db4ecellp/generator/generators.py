@@ -16,7 +16,7 @@ class Genbank(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
         
-    def generate_genbank_db(self):
+    def generate_genbank_file(self):
         # get Genbank file path
         gbk_file = self.query_file_by_format("Genbank")
         cds_file = '../../data/CDS_annotation.tbl'
@@ -70,7 +70,7 @@ class Promoter(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_annotation_files():
+    def generate_promoter_file():
         promoter_file = self.query_file_by_format("Promoter")
         
         output_file = open('../../data/promoter_annotation.tbl','w');
@@ -110,10 +110,10 @@ class Terminator(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_annotation_files():
+    def generate_terminator_files():
         terminator_file = self.query_file_by_format("Terminator")
     
-        output_file = open('data/terminator_annotation.tbl','w');
+        output_file = open('../../data/terminator_annotation.tbl','w');
 
         for line in open(terminator_file, 'r'):
             line = line.rstrip()
@@ -125,4 +125,40 @@ class Terminator(DataInitializer):
                 else:
                     text = "\t".join([lineArray[0],"-1",lineArray[1],lineArray[2],"terminator",lineArray[4] ])
                     output_file.write(text + "\n")
+
+class Operon(DataInitializer):
+    def __init__(self):
+        DataInitializer.__init__(self)
+
+    def generate_operon_file(self):
+        """
+        This script generates the operon DB from OperonSet.txt,
+        input data was collected from web resource of the RegulonDB.
+    
+        URL    : http://regulondb.ccg.unam.mx/menu/download/datasets/files/OperonSet.txt
+        OUTPUT : promoter_name    start    end    strand    gene_name(s)
+        """
+    
+        header = "%s\t%s\t%s\t%s\t%s" % ("promoter_id", "start", "end", "strand", "gene name(s)")
+        print header
+
+        file = '/home/soh.i/E-cell_Sprint/RegulonDATADist/OperonSet.txt'
+        with open(file, 'r') as f:
+            for line in f:
+            
+                if not line.startswith("#") and not line.isspace():
+                    data = line[:-1].split("\t")
+                    name = data[0]
+                    start = int(data[1])
+                    end  = int(data[2])
+                    strand = data[3]
+                    num_operon = int(data[4])
+                    gene_name = data[5]
+                    
+                    if 'forward' in strand:
+                        strand = int(1)
+                    elif 'reverse' in strand:
+                        strand = int(-1)
+                
+                    print "%s\t%d\t%d\t%d\t%s" %(name, start, end, strand, gene_name)
 
