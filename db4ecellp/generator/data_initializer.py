@@ -9,7 +9,7 @@ import os.path
 from os import remove
 
 
-class DataGenerator(object):
+class DataInitializer(object):
     '''
     Base class for the generating DB from some annotation resources(e.g.: regSeq, RegulonDB).
     '''
