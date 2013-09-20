@@ -70,10 +70,11 @@ class Promoter(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_annotation_files(promoter_file):
-
+    def generate_annotation_files():
+        promoter_file = self.query_file_by_format("Promoter")
+        
         output_file = open('../../data/promoter_annotation.tbl','w');
-
+        
         for line in open(promoter_file, 'r'):
             if (line.isspace()):
                 continue
@@ -88,7 +89,40 @@ class Promoter(DataInitializer):
                 if lineArray[2] in "forward":
                     text = "\t".join([ lineArray[0],"1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
                     output_file.write(text + "\n")
-
                 else:
-                    text =  "\t".join([ lineArray[0],"-1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
+                    text = "\t".join([ lineArray[0],"-1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
                     output_file.write(text + "\n")
+
+
+class Terminator(DataInitializer):
+    '''
+    Name: Satoshi Tamaki
+    E-mail: coela.st@gmail.com
+
+    This script generates the operon DB from TerminatorSet.txt,
+    input data was collected from web resource of the RegulonDB.(not from Web page)
+    http://regulondb.ccg.unam.mx/menu/download/datasets/files/TerminatorSet.txt
+
+    OUTPUT : terminator_id strand start end type(terminator) sequence
+    Terminator information from
+    '''
+
+    def __init__(self):
+        DataInitializer.__init__(self)
+
+    def generate_annotation_files():
+        terminator_file = self.query_file_by_format("Terminator")
+    
+        output_file = open('data/terminator_annotation.tbl','w');
+
+        for line in open(terminator_file, 'r'):
+            line = line.rstrip()
+            if not re.match('^[#]',line) and re.match('^\S',line):
+                lineArray = line.split("\t")
+                if lineArray[3] in "forward":
+                    text = "\t".join([lineArray[0],"1",lineArray[1],lineArray[2],"terminator",lineArray[4] ])
+                    output_file.write(text + "\n")
+                else:
+                    text = "\t".join([lineArray[0],"-1",lineArray[1],lineArray[2],"terminator",lineArray[4] ])
+                    output_file.write(text + "\n")
+
