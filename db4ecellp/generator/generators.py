@@ -163,3 +163,42 @@ class Operon(DataInitializer):
                 
                     print "%s\t%d\t%d\t%d\t%s" %(name, start, end, strand, gene_name)
 
+
+class GenePromoterInteraction(DataInitializer):
+    def __init__(self):
+        DataInitializer.__init__(self)
+
+    def generate_gene_promoter_interaction(self):
+        """
+        This script is used for generating promoter information per gene
+
+        DATA URL: http://regulondb.ccg.unam.mx/menu/download/datasets/files/OperonSet.txt
+        OUTPUT  : gene_name    strand    operon_id
+        """
+
+        file = '/home/soh.i/E-cell_Sprint/RegulonDATADist/OperonSet.txt'
+
+        integrated_data = {}
+        with open(file, 'r') as f:
+            for line in f:
+        
+                if not line.startswith("#") and not line.isspace():
+                    data = line[:-1].split("\t")
+            
+                    operon_name = 'OPERON_' + data[0]
+                    start       = int(data[1])
+                    end         = int(data[2])
+                    strand      = data[3]
+                    num_operon  = int(data[4])
+                    gene_names  = data[5]
+            
+                    if 'forward' in strand:
+                        strand = int(1)
+                    elif 'reverse' in strand:
+                        strand = int(-1)
+                
+                    gene = gene_names.split(",")
+                    for g in gene:
+                        integrated_data.update({g : {'operon_id' : operon_name, 'strand' : strand}})
+
+
