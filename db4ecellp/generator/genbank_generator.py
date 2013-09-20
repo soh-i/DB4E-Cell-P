@@ -8,16 +8,13 @@ from Bio import SeqIO
 import sys
 import os.path
 import os
-from data_generator import DataGenerator
 
-class Genbank(DataGenerator):
-    '''
-    Usage: gb = Genbank()
-           gb.generate_db()
-    '''
-    
+from data_initializer import DataInitializer
+
+
+class Genbank(DataInitializer):
     def __init__(self):
-        DataGenerator.__init__(self)
+        DataInitializer.__init__(self)
         
     def generate_genbank_db(self):
         # get Genbank file path
@@ -68,24 +65,3 @@ class Genbank(DataGenerator):
 
                     trna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
 
-
-gb = Genbank()
-gb.generate_genbank_db()
-print "finished parsing"
-
-
-
-"""
-        
-class Promoter(DataGenerator):
-    def __init__(self):
-        DataGenerator.__init__(self)
-
-class rRNA(DataGenerator):
-    def __init__(self):
-        DataGenerator.__init__(self)
-
-class tRNA(DataGenerator):
-    def __init__(self):
-        DataGenerator.__init__(self)
-"""
