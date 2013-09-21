@@ -17,6 +17,8 @@ Some required RegulonDB/refSeq dataset are able to download by `misc/required_da
 * TerminatorSet.txt
 
 ## Running
+Sample code is `query_test.py` in `DB4E-Cell-P/db4ecellp` directory.
+
 ### Query genome sequence and annotations
 ```python
 from session import Mapper, Query
