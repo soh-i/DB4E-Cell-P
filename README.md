@@ -9,6 +9,13 @@ Providing generating database class and query/filter DB interfaces for running s
 pip install -r requeirements.txt
 ```
 
+### Required data
+Download some files from RegulonDB/refSeq data is needed to generate SQLite3 db
+
+* NC_000913.gbk
+* PromoterSet.txt
+* TerminatorSet.txt
+
 ## Running
 ### Query genome sequence and annotations
 ```python
