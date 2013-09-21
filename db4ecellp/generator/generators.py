@@ -1,4 +1,4 @@
-__program__ = 'genbank_generator'
+__program__ = 'generators'
 __version__ = '0.0.1'
 __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __copyright__ = ''
@@ -12,16 +12,14 @@ from os import remove
 
 
 class DataInitializer(object):
-    '''
-    Base class for the generating DB from some annotation resource
-    '''
     
     def __init__(self):
         __regulonDB_files = {
             'Genbank':'../../data/NC_000913.gbk',
-            'GenomeSequence':'',
-            'Promoter':'',
-            'TerminatorSet':'',
+            'GenomeSequence':'../data/test.fa',
+            'Promoter':'../data/PromoterSet.txt',
+            'Terminator':'../data/TerminatorSet.txt',
+            #'Operon':'../data/',
         }
         self.__regulonDB_files = __regulonDB_files
     
@@ -41,6 +39,7 @@ class DataInitializer(object):
 
 
 class Genbank(DataInitializer):
+    
     def __init__(self):
         DataInitializer.__init__(self)
         
@@ -96,6 +95,7 @@ class Genbank(DataInitializer):
 
 
 class Promoter(DataInitializer):
+    
     def __init__(self):
         DataInitializer.__init__(self)
 
@@ -141,7 +141,6 @@ class Terminator(DataInitializer):
 
     def generate_terminator_file():
         terminator_file = self.query_file_by_format("Terminator")
-    
         output_file = open('../../data/terminator_annotation.tbl','w');
 
         for line in open(terminator_file, 'r'):
@@ -158,7 +157,8 @@ class Terminator(DataInitializer):
 
 class Operon(DataInitializer):
     def __init__(self):
-        DataInitializer.__init__(self)
+        raise NotImplementedError
+        #DataInitializer.__init__(self)
 
     def generate_operon_file(self):
         """
@@ -195,7 +195,8 @@ class Operon(DataInitializer):
 
 class GenePromoterInteraction(DataInitializer):
     def __init__(self):
-        DataInitializer.__init__(self)
+        raise NotImplementedError
+        #DataInitializer.__init__(self)
 
     def generate_gene_promoter_interaction_file(self):
         """
