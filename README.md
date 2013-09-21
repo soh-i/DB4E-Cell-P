@@ -10,7 +10,7 @@ pip install -r requeirements.txt
 ```
 
 ### Required data
-Download some files from RegulonDB/refSeq data is needed to generate SQLite3 db
+Some required RegulonDB/refSeq dataset are able to download by `misc/required_data_downloader.pl`, then put those files into `data` directory.
 
 * NC_000913.gbk
 * PromoterSet.txt
