@@ -4,9 +4,11 @@ __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __copyright__ = ''
 __license__ = ''
 
-from genbank_generator import Genbank
-#from genbank_generator import Promoter
-#from genbank_generator import Terminater
+from generators import Genbank
+from generators import Promoter
+from generators import Terminator
+from generators import Operon
+from generators import GenePromoterInteraction
 
 
 class AnnotationBuilder(object):
@@ -15,7 +17,7 @@ class AnnotationBuilder(object):
 
     def generate_annotations(self):
         gb = Genbank()
-        gb.generate_genbank_db()
+        gb.generate_genbank_file()
 
         #promoter = Promoter()
         #promoter.genrate_promoter_db()
