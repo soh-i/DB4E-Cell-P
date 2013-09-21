@@ -20,7 +20,7 @@ from os import remove
 class Mapper(Genbank):
     def __init__(self):
         Genbank.__init__(self)
-        self. generate_genbank_file()
+        self.generate_genbank_file()
         
         db_path = '../../db/ecoli.sqlite3'
         if os.path.isfile(db_path):
