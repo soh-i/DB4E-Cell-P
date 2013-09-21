@@ -7,6 +7,7 @@ __license__ = ''
 from Bio import SeqIO
 import sys
 import os
+import re
 import os.path
 from os import remove
 
@@ -16,9 +17,9 @@ class DataInitializer(object):
     def __init__(self):
         __regulonDB_files = {
             'Genbank':'../../data/NC_000913.gbk',
-            'GenomeSequence':'../data/test.fa',
-            'Promoter':'../data/PromoterSet.txt',
-            'Terminator':'../data/TerminatorSet.txt',
+            'GenomeSequence':'../../data/test.fa',
+            'Promoter':'../../data/PromoterSet.txt',
+            'Terminator':'../../data/TerminatorSet.txt',
             #'Operon':'../data/',
         }
         self.__regulonDB_files = __regulonDB_files
@@ -99,7 +100,7 @@ class Promoter(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_promoter_file():
+    def generate_promoter_file(self):
         promoter_file = self.query_file_by_format("Promoter")
         
         output_file = open('../../data/promoter_annotation.tbl','w');
@@ -139,7 +140,7 @@ class Terminator(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_terminator_file():
+    def generate_terminator_file(self):
         terminator_file = self.query_file_by_format("Terminator")
         output_file = open('../../data/terminator_annotation.tbl','w');
 
