@@ -22,9 +22,9 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         Genbank.__init__(self)
         self.generate_genbank_file()
         self.generate_terminator_file()
-        #self.generate_promoter_file()
-        #self.generate_operon_file()
-        #self.generate_gene_promoter_interaction_file()
+        self.generate_promoter_file()
+        #self.generate_operon_file() #Not Implemented
+        #self.generate_gene_promoter_interaction_file() #Not Implemented
         
         db_path = '../../db/ecoli.sqlite3'
         if os.path.isfile(db_path):
@@ -56,17 +56,33 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_rRNA(self):
-        pass
+        with open('../../data/rRNA_annotation.tbl', 'r') as f:
+            for line in f:
+                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+                obj = species.tRNA(name, strand, start, end, feature, sequence)
+                self.session.add(obj)
+        self.session.commit()
 
     def __mapping_promoter(self):
-        pass
+        with open('../../data/promoter_annotation.tbl', 'r') as f:
+            for line in f:
+                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+                obj = species.tRNA(name, strand, start, end, feature, sequence)
+                self.session.add(obj)
+        self.session.commit()
 
     def __mapping_terminater(self):
-        pass
-    
+        with open('../../data/terminator_annotation.tbl', 'r') as f:
+            for line in f:
+                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+                obj = species.tRNA(name, strand, start, end, feature, sequence)
+                self.session.add(obj)
+        self.session.commit()
+
     def generate_db(self):
         self.__mapping_CDS()
         self.__mapping_tRNA()
+        self.__mapping_rRNA()
         self.__mapping_promoter()
         self.__mapping_terminater()
 
