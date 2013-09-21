@@ -18,12 +18,14 @@ class AnnotationBuilder(object):
     def generate_annotations(self):
         gb = Genbank()
         gb.generate_genbank_file()
-
-        #promoter = Promoter()
-        #promoter.genrate_promoter_db()
+        
+        terminator = Terminator()
+        promoter = Promoter()
+        operon = Operon()
+        gp_inter = GenePromoterInteraction()
 
     
 if __name__ == '__main__':
     builder = AnnotationBuilder()
     builder.generate_annotations()
-    print "finished parsing"
+    print "Finished building annotation files..."
