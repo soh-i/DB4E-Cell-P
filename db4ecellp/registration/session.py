@@ -4,14 +4,24 @@ __author__ = 'Soh Ishiguro <t10078si@sfc.keio.ac.jp>'
 __copyright__ = ''
 __license__ = ''
 
+import sys
+import os
+path = os.path.abspath('../generator')
+sys.path.append(path)
+
 from species import species
+from generators import Genbank
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 import os.path
 from os import remove
 
-class Mapper(object):
+
+class Mapper(Genbank):
     def __init__(self):
+        Genbank.__init__(self)
+        self. generate_genbank_file()
+        
         db_path = '../../db/ecoli.sqlite3'
         if os.path.isfile(db_path):
             os.remove(db_path)
@@ -53,6 +63,8 @@ class Mapper(object):
     def generate_db(self):
         self.__mapping_CDS()
         self.__mapping_tRNA()
+        self.__mapping_promoter()
+        self.__mapping_terminater()
 
 
 class Query(Mapper):
@@ -89,7 +101,6 @@ class Query(Mapper):
         else:
             raise RuntimeError, "Invalid argument given [%d], must be -1 or 1" % (strand)
             
-    
     def include_record_in_region(self, start, end):
         records = []
         for record in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
