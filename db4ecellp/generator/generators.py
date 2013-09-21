@@ -6,10 +6,38 @@ __license__ = ''
 
 from Bio import SeqIO
 import sys
-import os.path
 import os
+import os.path
+from os import remove
 
-from data_initializer import DataInitializer
+
+class DataInitializer(object):
+    '''
+    Base class for the generating DB from some annotation resource
+    '''
+    
+    def __init__(self):
+        __regulonDB_files = {
+            'Genbank':'../../data/NC_000913.gbk',
+            'GenomeSequence':'',
+            'Promoter':'',
+            'TerminatorSet':'',
+        }
+        self.__regulonDB_files = __regulonDB_files
+    
+    def query_file_by_format(self, format):
+        if os.path.isfile(self.__regulonDB_files[format]):
+            return self.__regulonDB_files[format]
+        else:
+            raise IOError, "Given file(format=[%s]) is not found." % (format)
+    
+    def clean_up_data(self, *file):
+        for f in file:
+            if os.path.isfile(f):
+                os.remove(f)
+
+    def add_additional_annotation(self, file_path, db_name):
+        self.__regulonDB_files.update({db_name:file_path})
 
 
 class Genbank(DataInitializer):
@@ -19,6 +47,8 @@ class Genbank(DataInitializer):
     def generate_genbank_file(self):
         # get Genbank file path
         gbk_file = self.query_file_by_format("Genbank")
+        
+        # output generated annotation files
         cds_file = '../../data/CDS_annotation.tbl'
         trna_file = '../../data/tRNA_annotation.tbl'
         rrna_file = '../../data/rRNA_annotation.tbl'
@@ -43,7 +73,6 @@ class Genbank(DataInitializer):
                         feature = feature.type
                     
                         cds_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
-                
                         
                 elif feature.type == 'rRNA':
                     gene = feature.qualifiers['gene'][0]
@@ -110,7 +139,7 @@ class Terminator(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_terminator_files():
+    def generate_terminator_file():
         terminator_file = self.query_file_by_format("Terminator")
     
         output_file = open('../../data/terminator_annotation.tbl','w');
@@ -168,7 +197,7 @@ class GenePromoterInteraction(DataInitializer):
     def __init__(self):
         DataInitializer.__init__(self)
 
-    def generate_gene_promoter_interaction(self):
+    def generate_gene_promoter_interaction_file(self):
         """
         This script is used for generating promoter information per gene
 
