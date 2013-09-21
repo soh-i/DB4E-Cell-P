@@ -21,9 +21,9 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
     def __init__(self):
         Genbank.__init__(self)
         self.generate_genbank_file()
+        self.generate_terminator_file()
         #self.generate_promoter_file()
         #self.generate_operon_file()
-        #self.generate_terminator_file()
         #self.generate_gene_promoter_interaction_file()
         
         db_path = '../../db/ecoli.sqlite3'
