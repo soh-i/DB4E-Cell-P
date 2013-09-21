@@ -43,12 +43,12 @@ class CDS(Species):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
 cds_table = Table('cds', metadata,
-                  Column('id',       Integer, primary_key=True),
-                  Column('name',     String),
-                  Column('strand',   Integer),
-                  Column('start',    Integer),
-                  Column('end',      Integer),
-                  Column('feature',  String),
+                  Column('id', Integer, primary_key=True),
+                  Column('name', String),
+                  Column('strand', Integer),
+                  Column('start', Integer),
+                  Column('end', Integer),
+                  Column('feature', String),
                   Column('sequence', String),
                   sqlite_autoincrement=True
 )
@@ -59,71 +59,65 @@ class tRNA(Species):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
 trna_table = Table('trna', metadata,
-                   Column('id',       Integer,primary_key=True),
-                   Column('name',     String),
-                   Column('strand',   Integer),
-                   Column('start',    Integer),
-                   Column('end',      Integer),
-                   Column('feature',  String),
+                   Column('id', Integer,primary_key=True),
+                   Column('name', String),
+                   Column('strand', Integer),
+                   Column('start', Integer),
+                   Column('end', Integer),
+                   Column('feature', String),
                    Column('sequence', String),
                    sqlite_autoincrement=True
 )
-mapper(Species, species_table)
-mapper(CDS, cds_table)
-mapper(tRNA, trna_table)
 
 
-"""
 class rRNA(Species):
     def __init__(self, name, strand, start, end, feature, sequence):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
-    rRNA_table = Table('rrna', metadata,
-                       Column('id',       Integer, primary_key=True),
-                       Column('name',     String),
-                       Column('strand',   String),                      
-                       Column('start',    Integer),
-                       Column('end',      Integer),
-                       Column('feature',  String),
-                       Column('sequence', String),
-                       sqlite_autoincrement=True
-                   )
+rrna_table = Table('rrna', metadata,
+                   Column('id', Integer, primary_key=True),
+                   Column('name', String),
+                   Column('strand', Integer),                      
+                   Column('start', Integer),
+                   Column('end', Integer),
+                   Column('feature', String),
+                   Column('sequence', String),
+                   sqlite_autoincrement=True
+)
 
 class Promoter(Species):
     def __init__(self, name, strand, start, end, feature, sequence):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
-    promoter_table = Table('promoter', metadata,
-                           Column('id',       Integer, primary_key=True),
-                           Column('name',     String),
-                           Column('strand',   String),                      
-                           Column('start',    Integer),
-                           Column('end',      Integer),
-                           Column('feature',  String),
-                           Column('sequence', String),
-                           sqlite_autoincrement=True
-    )
-    
+promoter_table = Table('promoter', metadata,
+                       Column('id',  Integer, primary_key=True),
+                       Column('name', String),
+                       Column('strand', Integer),                      
+                       Column('start', Integer),
+                       Column('end', Integer),
+                       Column('feature', String),
+                       Column('sequence', String),
+                       sqlite_autoincrement=True
+)
+
 class Terminator(Species):
     def __init__(self, name, strand, start, end, feature, sequence):
         Species.__init__(self, name, strand, start, end, feature, sequence)
 
-    terminator_table = Table('terminator', metadata,
-                             Column('id',       Integer, primary_key=True),
-                             Column('name',     String),
-                             Column('strand',   String),                      
-                             Column('start',    Integer),
-                             Column('end',      Integer),
-                             Column('feature',  String),
-                             Column('sequence', String),
-                             sqlite_autoincrement=True
-                         )
+terminator_table = Table('terminator', metadata,
+                         Column('id', Integer, primary_key=True),
+                         Column('name', String),
+                         Column('strand', Integer),
+                         Column('start', Integer),
+                         Column('end', Integer),
+                         Column('feature', String),
+                         Column('sequence', String),
+                         sqlite_autoincrement=True
+)
 
-
+mapper(Species, species_table)
 mapper(CDS, cds_table)
-mapper(rRNA, rRNA_table)
-mapper(tRNA, tRNA_table)
+mapper(tRNA, trna_table)
+mapper(rRNA, rrna_table)
 mapper(Promoter, promoter_table)
 mapper(Terminator, terminator_table)
-
-"""
