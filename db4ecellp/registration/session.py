@@ -10,17 +10,21 @@ path = os.path.abspath('../generator')
 sys.path.append(path)
 
 from species import species
-from generators import Genbank
+from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 import os.path
 from os import remove
 
 
-class Mapper(Genbank):
+class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
     def __init__(self):
         Genbank.__init__(self)
         self.generate_genbank_file()
+        #self.generate_promoter_file()
+        #self.generate_operon_file()
+        #self.generate_terminator_file()
+        #self.generate_gene_promoter_interaction_file()
         
         db_path = '../../db/ecoli.sqlite3'
         if os.path.isfile(db_path):
