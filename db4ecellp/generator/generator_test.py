@@ -20,10 +20,11 @@ class AnnotationBuilder(object):
         gb.generate_genbank_file()
         
         terminator = Terminator()
+        terminator.generate_terminator_file()
+        
         promoter = Promoter()
-        operon = Operon()
-        gp_inter = GenePromoterInteraction()
-
+        promoter.generate_promoter_file()
+        
     
 if __name__ == '__main__':
     builder = AnnotationBuilder()
