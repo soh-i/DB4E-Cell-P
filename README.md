@@ -29,7 +29,7 @@ Sample code is `query_test.py` in `DB4E-Cell-P/db4ecellp` directory.
 ### Query genome sequence and annotations
 ```python
 from db4ecellp import db4ecellp
-query = Query()
+query = db4ecellp.Query('./conf.ini') # PATH TO conf.ini
 
 print query.count_stored_records()
 #=> 4145
