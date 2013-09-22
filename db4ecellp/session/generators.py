@@ -19,7 +19,7 @@ sys.path.append(path)
 class DataInitializer(object):
     
     def __init__(self):
-        self.conf_file = '../../conf.ini'
+        self.conf_file = 'conf.ini'
         if not os.path.isfile(self.conf_file):
             raise RuntimeError, "Configuration file [%s] is not found" % (self.conf_file)
 
@@ -39,6 +39,9 @@ class DataInitializer(object):
         self.tRNA_OUT       = APP_ROOT + conf.get('output_data', 'trna')
         self.PROMOTOR_OUT   = APP_ROOT + conf.get('output_data', 'promoter')
         self.TERMINATOR_OUT = APP_ROOT + conf.get('output_data', 'terminator')
+    
+        # DB
+        self.DB_PATH = APP_ROOT + conf.get('db', 'db_path')
         
     def is_valid_file(self, file):
         if not os.path.isfile(file):
