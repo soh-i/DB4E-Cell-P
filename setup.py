@@ -9,5 +9,6 @@ setup(
     name='db4ecellp',
     packages=['db4ecellp', 'db4ecellp.session', 'db4ecellp.session.species'],
     license='',
+    install_requires = ['biopython==1.62', 'sqlalchemy==0.8.2', 'pysqlite==2.6.3']
 )
 
