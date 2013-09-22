@@ -10,6 +10,7 @@ import os
 import re
 import os.path
 from os import remove
+import ConfigParser
 
 path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(path)
@@ -18,21 +19,30 @@ sys.path.append(path)
 class DataInitializer(object):
     
     def __init__(self):
-        __regulonDB_files = {
-            'Genbank':'data/NC_000913.gbk',
-            'GenomeSequence':'data/test.fa',
-            'Promoter':'data/PromoterSet.txt',
-            'Terminator':'data/TerminatorSet.txt',
-            #'Operon':'../data/',
-        }
-        self.__regulonDB_files = __regulonDB_files
-    
-    def query_file_by_format(self, format):
-        if os.path.isfile(self.__regulonDB_files[format]):
-            print os.path.abspath(self.__regulonDB_files[format])
-            return self.__regulonDB_files[format]
-        else:
-            raise IOError, "Given file(format=[%s, %s]) is not found." % (format, os.path.abspath(self.__regulonDB_files[format]))
+        self.conf_file = '../../conf.ini'
+        if not os.path.isfile(self.conf_file):
+            raise RuntimeError, "Configuration file [%s] is not found" % (self.conf_file)
+
+        conf = ConfigParser.RawConfigParser()
+        conf.read(self.conf_file)
+        APP_ROOT = conf.get('root', 'APP_ROOT')
+
+        # Read input file
+        self.GENBANK_FILE    = APP_ROOT + conf.get('input_data', 'genbank')
+        self.PROMOTER_FILE   = APP_ROOT + conf.get('input_data', 'promoter')
+        self.TERMINATOR_FILE = APP_ROOT + conf.get('input_data', 'terminator')
+        self.GENOME_SEQUENCE = APP_ROOT + conf.get('input_data', 'sequence')
+        
+        # Read output file
+        self.CDS_OUT        = APP_ROOT + conf.get('output_data', 'cds')
+        self.rRNA_OUT       = APP_ROOT + conf.get('output_data', 'rrna')
+        self.tRNA_OUT       = APP_ROOT + conf.get('output_data', 'trna')
+        self.PROMOTOR_OUT   = APP_ROOT + conf.get('output_data', 'promoter')
+        self.TERMINATOR_OUT = APP_ROOT + conf.get('output_data', 'terminator')
+        
+    def is_valid_file(self, file):
+        if not os.path.isfile(file):
+            raise IOError, "%s (wrote in %s) is not found" % (file, self.conf_file)
     
     def clean_up_data(self, *file):
         for f in file:
@@ -49,21 +59,20 @@ class Genbank(DataInitializer):
         DataInitializer.__init__(self)
         
     def generate_genbank_file(self):
-        # get Genbank file path
-        gbk_file = self.query_file_by_format("Genbank")
+        self.is_valid_file(self.GENBANK_FILE)
+        # if exist previous generated files, just remove it
+        self.clean_up_data(
+            self.CDS_OUT,
+            self.rRNA_OUT,
+            self.tRNA_OUT,
+            self.PROMOTOR_OUT,
+            self.TERMINATOR_OUT
+        )
         
-        # output generated annotation files
-        cds_file = 'data/CDS_annotation.tbl'
-        trna_file = 'data/tRNA_annotation.tbl'
-        rrna_file = 'data/rRNA_annotation.tbl'
-        
-        # if exist previous generated files, remove it
-        self.clean_up_data(cds_file, rrna_file, trna_file)
-        
-        handle = open(gbk_file, 'r')
-        cds_f  = open(cds_file, 'a')
-        rrna_f = open(rrna_file, 'a')
-        trna_f = open(trna_file, 'a')
+        handle = open(self.GENBANK_FILE, 'r')
+        cds_f  = open(self.CDS_OUT, 'a')
+        rrna_f = open(self.rRNA_OUT, 'a')
+        trna_f = open(self.tRNA_OUT, 'a')
         
         for record in SeqIO.parse(handle, 'genbank'):
             for feature in record.features:
@@ -105,9 +114,9 @@ class Promoter(DataInitializer):
         DataInitializer.__init__(self)
 
     def generate_promoter_file(self):
-        promoter_file = self.query_file_by_format("Promoter")
+        #promoter_file = self.query_file_by_format("Promoter")
         
-        output_file = open('data/promoter_annotation.tbl','w');
+        output_file = open(self.PROMOTOR_OUT, 'w');
         
         for line in open(promoter_file, 'r'):
             if (line.isspace()):
@@ -145,8 +154,8 @@ class Terminator(DataInitializer):
         DataInitializer.__init__(self)
 
     def generate_terminator_file(self):
-        terminator_file = self.query_file_by_format("Terminator")
-        output_file = open('data/terminator_annotation.tbl','w');
+        #terminator_file = self.query_file_by_format("Terminator")
+        output_file = open(self.TERMINATOR_OUT, 'w');
 
         for line in open(terminator_file, 'r'):
             line = line.rstrip()
