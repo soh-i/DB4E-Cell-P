@@ -49,9 +49,6 @@ class DataInitializer(object):
             if os.path.isfile(f):
                 os.remove(f)
 
-    def add_additional_annotation(self, file_path, db_name):
-        self.__regulonDB_files.update({db_name:file_path})
-
 
 class Genbank(DataInitializer):
     
@@ -118,7 +115,7 @@ class Promoter(DataInitializer):
         
         output_file = open(self.PROMOTOR_OUT, 'w');
         
-        for line in open(promoter_file, 'r'):
+        for line in open(self.PROMOTER_FILE, 'r'):
             if (line.isspace()):
                 continue
 
@@ -157,7 +154,7 @@ class Terminator(DataInitializer):
         #terminator_file = self.query_file_by_format("Terminator")
         output_file = open(self.TERMINATOR_OUT, 'w');
 
-        for line in open(terminator_file, 'r'):
+        for line in open(self.TERMINATOR_FILE, 'r'):
             line = line.rstrip()
             if not re.match('^[#]',line) and re.match('^\S',line):
                 lineArray = line.split("\t")
