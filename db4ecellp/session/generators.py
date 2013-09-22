@@ -21,7 +21,7 @@ class DataInitializer(object):
     def __init__(self):
         self.conf_file = 'conf.ini'
         if not os.path.isfile(self.conf_file):
-            raise RuntimeError, "Configuration file [%s] is not found" % (self.conf_file)
+            raise RuntimeError, "Configuration file [%s] is not found" % (os.path.abspath(self.conf_file))
 
         conf = ConfigParser.RawConfigParser()
         conf.read(self.conf_file)
