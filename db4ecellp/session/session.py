@@ -16,8 +16,8 @@ from os import remove
 
 
 class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
-    def __init__(self):
-        Genbank.__init__(self)
+    def __init__(self, conf):
+        Genbank.__init__(self, conf)
         self.generate_genbank_file()
         self.generate_terminator_file()
         self.generate_promoter_file()
@@ -86,8 +86,9 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
 
 class Query(Mapper):
 
-    def __init__(self):
-        Mapper.__init__(self)
+    def __init__(self, conf):
+        self.conf = conf
+        Mapper.__init__(self, self.conf)
         self.generate_db()
         
     def count_stored_records(self):
