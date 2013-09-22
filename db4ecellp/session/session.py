@@ -24,11 +24,10 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         #self.generate_operon_file() #Not Implemented
         #self.generate_gene_promoter_interaction_file() #Not Implemented
         
-        db_path = 'db/ecoli.sqlite3'
-        if os.path.isfile(db_path):
-            os.remove(db_path)
+        if os.path.isfile(self.DB_PATH):
+            os.remove(self.DB_PATH)
             
-        self.engine = species.create_engine('sqlite:///' + db_path, echo=False)
+        self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
         species.metadata.create_all(self.engine)
         self.Session = species.sessionmaker()
         self.Session.configure(bind=self.engine)
@@ -38,7 +37,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.delete()
 
     def __mapping_CDS(self):
-        with open('data/CDS_annotation.tbl', 'r') as f:
+        with open(self.CDS_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.CDS(name, strand, start, end, feature, sequence)
@@ -46,7 +45,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_tRNA(self):
-        with open('data/tRNA_annotation.tbl', 'r') as f:
+        with open(self.tRNA_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.tRNA(name, strand, start, end, feature, sequence)
@@ -54,7 +53,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_rRNA(self):
-        with open('data/rRNA_annotation.tbl', 'r') as f:
+        with open(self.rRNA_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.tRNA(name, strand, start, end, feature, sequence)
@@ -62,7 +61,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_promoter(self):
-        with open('data/promoter_annotation.tbl', 'r') as f:
+        with open(self.PROMOTOR_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.tRNA(name, strand, start, end, feature, sequence)
@@ -70,7 +69,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_terminater(self):
-        with open('data/terminator_annotation.tbl', 'r') as f:
+        with open(self.TERMINATOR_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species.tRNA(name, strand, start, end, feature, sequence)
