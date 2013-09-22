@@ -11,21 +11,25 @@ import re
 import os.path
 from os import remove
 
+path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(path)
+
 
 class DataInitializer(object):
     
     def __init__(self):
         __regulonDB_files = {
-            'Genbank':'../data/NC_000913.gbk',
-            'GenomeSequence':'../data/test.fa',
-            'Promoter':'../data/PromoterSet.txt',
-            'Terminator':'../data/TerminatorSet.txt',
+            'Genbank':'data/NC_000913.gbk',
+            'GenomeSequence':'data/test.fa',
+            'Promoter':'data/PromoterSet.txt',
+            'Terminator':'data/TerminatorSet.txt',
             #'Operon':'../data/',
         }
         self.__regulonDB_files = __regulonDB_files
     
     def query_file_by_format(self, format):
         if os.path.isfile(self.__regulonDB_files[format]):
+            print os.path.abspath(self.__regulonDB_files[format])
             return self.__regulonDB_files[format]
         else:
             raise IOError, "Given file(format=[%s, %s]) is not found." % (format, os.path.abspath(self.__regulonDB_files[format]))
@@ -49,9 +53,9 @@ class Genbank(DataInitializer):
         gbk_file = self.query_file_by_format("Genbank")
         
         # output generated annotation files
-        cds_file = '../data/CDS_annotation.tbl'
-        trna_file = '../data/tRNA_annotation.tbl'
-        rrna_file = '../data/rRNA_annotation.tbl'
+        cds_file = 'data/CDS_annotation.tbl'
+        trna_file = 'data/tRNA_annotation.tbl'
+        rrna_file = 'data/rRNA_annotation.tbl'
         
         # if exist previous generated files, remove it
         self.clean_up_data(cds_file, rrna_file, trna_file)
@@ -103,7 +107,7 @@ class Promoter(DataInitializer):
     def generate_promoter_file(self):
         promoter_file = self.query_file_by_format("Promoter")
         
-        output_file = open('../data/promoter_annotation.tbl','w');
+        output_file = open('data/promoter_annotation.tbl','w');
         
         for line in open(promoter_file, 'r'):
             if (line.isspace()):
@@ -142,7 +146,7 @@ class Terminator(DataInitializer):
 
     def generate_terminator_file(self):
         terminator_file = self.query_file_by_format("Terminator")
-        output_file = open('../data/terminator_annotation.tbl','w');
+        output_file = open('data/terminator_annotation.tbl','w');
 
         for line in open(terminator_file, 'r'):
             line = line.rstrip()
@@ -173,7 +177,7 @@ class Operon(DataInitializer):
         header = "%s\t%s\t%s\t%s\t%s" % ("promoter_id", "start", "end", "strand", "gene name(s)")
         print header
 
-        file = '/home/soh.i/E-cell_Sprint/RegulonDATADist/OperonSet.txt'
+        file = 'data/OperonSet.txt'
         with open(file, 'r') as f:
             for line in f:
             
@@ -207,7 +211,7 @@ class GenePromoterInteraction(DataInitializer):
         OUTPUT  : gene_name    strand    operon_id
         """
 
-        file = '/home/soh.i/E-cell_Sprint/RegulonDATADist/OperonSet.txt'
+        file = 'data/OperonSet.txt'
 
         integrated_data = {}
         with open(file, 'r') as f:
