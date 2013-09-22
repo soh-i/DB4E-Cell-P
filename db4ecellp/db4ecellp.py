@@ -1,1 +1,1 @@
-from session.session import Query
+from session.session import QueryBuilder

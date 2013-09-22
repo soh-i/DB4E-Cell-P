@@ -84,7 +84,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.__mapping_terminater()
 
 
-class Query(Mapper):
+class QueryBuilder(Mapper):
 
     def __init__(self, conf):
         self.conf = conf
