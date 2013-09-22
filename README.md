@@ -16,12 +16,19 @@ Some required RegulonDB/refSeq dataset are able to download by `misc/required_da
 * PromoterSet.txt
 * TerminatorSet.txt
 
+### Configuration file
+Add **absolute** project root path into `conf.ini`.
+```ini
+[root]
+APP_ROOT=/Users/yukke/dev/DB4E-Cell-P
+```
+
 ## Running
 Sample code is `query_test.py` in `DB4E-Cell-P/db4ecellp` directory.
 
 ### Query genome sequence and annotations
 ```python
-from session import Mapper, Query
+from db4ecellp import db4ecellp
 query = Query()
 
 print query.count_stored_records()
