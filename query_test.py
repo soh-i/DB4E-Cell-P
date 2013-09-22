@@ -1,13 +1,13 @@
 #!/usr/bin/env python 
 
-from session import session
+from db4ecellp import db4ecellp
 
 
 def query_test():
 
     # create Mapper class object (generating DB)
-    data = '../conf.ini'
-    query = session.Query(data)
+    data = './conf.ini'
+    query = db4ecellp.Query(data)
     
     print query.count_stored_records()
     #print query.collect_cds_records()
