@@ -18,10 +18,10 @@ sys.path.append(path)
 
 class DataInitializer(object):
     
-    def __init__(self):
-        self.conf_file = 'conf.ini'
+    def __init__(self, conf):
+        self.conf_file = conf
         if not os.path.isfile(self.conf_file):
-            raise RuntimeError, "Configuration file [%s] is not found" % (self.conf_file)
+            raise RuntimeError, "Configuration file [%s] is not found" % (os.path.abspath(self.conf_file))
 
         conf = ConfigParser.RawConfigParser()
         conf.read(self.conf_file)
@@ -55,8 +55,8 @@ class DataInitializer(object):
 
 class Genbank(DataInitializer):
     
-    def __init__(self):
-        DataInitializer.__init__(self)
+    def __init__(self, conf):
+        DataInitializer.__init__(self, conf)
         
     def generate_genbank_file(self):
         self.is_valid_file(self.GENBANK_FILE)
@@ -110,8 +110,8 @@ class Genbank(DataInitializer):
 
 class Promoter(DataInitializer):
     
-    def __init__(self):
-        DataInitializer.__init__(self)
+    def __init__(self, conf):
+        DataInitializer.__init__(self, conf)
 
     def generate_promoter_file(self):
         #promoter_file = self.query_file_by_format("Promoter")
@@ -150,8 +150,8 @@ class Terminator(DataInitializer):
     Terminator information from
     '''
 
-    def __init__(self):
-        DataInitializer.__init__(self)
+    def __init__(self, conf):
+        DataInitializer.__init__(self, conf)
 
     def generate_terminator_file(self):
         #terminator_file = self.query_file_by_format("Terminator")
