@@ -1,17 +1,21 @@
+import sys
+sys.path.append('../')
+
 from generators import Genbank
 from generators import Promoter
 from generators import Terminator
 
 def generator_test():
-    gb = Genbank()
+    conf = '../../../conf.ini'
+    gb = Genbank(conf)
     gb.generate_genbank_file()
     print "Finished gbk file"
 
-    tm = Terminator()
+    tm = Terminator(conf)
     tm.generate_terminator_file()
     print "Finished terminator file"
     
-    pr = Promoter()
+    pr = Promoter(conf)
     pr.generate_promoter_file()
     print "Finisehd promoter file"
 
