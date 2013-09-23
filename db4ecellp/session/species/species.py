@@ -28,12 +28,12 @@ class Species(object):
 
 species_table = Table('species', metadata,
                       Column('id', Integer, primary_key=True),
-                      Column('name', String),
-                      Column('strand', Integer),
-                      Column('start', Integer),
-                      Column('end',  Integer),
-                      Column('feature', String),
-                      Column('sequence', String),
+                      Column('name', String, nullable=False),
+                      Column('strand', Integer, nullable=False),
+                      Column('start', Integer, nullable=False),
+                      Column('end',  Integer, nullable=False),
+                      Column('feature', String, nullable=False),
+                      Column('sequence', String, nullable=False),
                       sqlite_autoincrement=True
 )
 
@@ -44,12 +44,12 @@ class CDS(Species):
 
 cds_table = Table('cds', metadata,
                   Column('id', Integer, primary_key=True),
-                  Column('name', String),
-                  Column('strand', Integer),
-                  Column('start', Integer),
-                  Column('end', Integer),
-                  Column('feature', String),
-                  Column('sequence', String),
+                  Column('name', String, nullable=False),
+                  Column('strand', Integer, nullable=False),
+                  Column('start', Integer, nullable=False),
+                  Column('end', Integer, nullable=False),
+                  Column('feature', String, nullable=False),
+                  Column('sequence', String, nullable=False),
                   sqlite_autoincrement=True
 )
 
@@ -60,12 +60,12 @@ class tRNA(Species):
 
 trna_table = Table('trna', metadata,
                    Column('id', Integer,primary_key=True),
-                   Column('name', String),
-                   Column('strand', Integer),
-                   Column('start', Integer),
-                   Column('end', Integer),
-                   Column('feature', String),
-                   Column('sequence', String),
+                   Column('name', String, nullable=False),
+                   Column('strand', Integer, nullable=False),
+                   Column('start', Integer, nullable=False),
+                   Column('end', Integer, nullable=False),
+                   Column('feature', String, nullable=False),
+                   Column('sequence', String, nullable=False),
                    sqlite_autoincrement=True
 )
 
@@ -76,12 +76,12 @@ class rRNA(Species):
 
 rrna_table = Table('rrna', metadata,
                    Column('id', Integer, primary_key=True),
-                   Column('name', String),
-                   Column('strand', Integer),                      
-                   Column('start', Integer),
-                   Column('end', Integer),
-                   Column('feature', String),
-                   Column('sequence', String),
+                   Column('name', String, nullable=False),
+                   Column('strand', Integer, nullable=False),
+                   Column('start', Integer, nullable=False),
+                   Column('end', Integer, nullable=False),
+                   Column('feature', String, nullable=False),
+                   Column('sequence', String, nullable=False),
                    sqlite_autoincrement=True
 )
 
@@ -91,12 +91,12 @@ class Promoter(Species):
 
 promoter_table = Table('promoter', metadata,
                        Column('id',  Integer, primary_key=True),
-                       Column('name', String),
-                       Column('strand', Integer),                      
-                       Column('start', Integer),
-                       Column('end', Integer),
-                       Column('feature', String),
-                       Column('sequence', String),
+                       Column('name', String, nullable=False),
+                       Column('strand', Integer, nullable=False),
+                       Column('start', Integer, nullable=False),
+                       Column('end', Integer, nullable=False),
+                       Column('feature', String, nullable=False),
+                       Column('sequence', String, nullable=False),
                        sqlite_autoincrement=True
 )
 
@@ -106,12 +106,12 @@ class Terminator(Species):
 
 terminator_table = Table('terminator', metadata,
                          Column('id', Integer, primary_key=True),
-                         Column('name', String),
-                         Column('strand', Integer),
-                         Column('start', Integer),
-                         Column('end', Integer),
-                         Column('feature', String),
-                         Column('sequence', String),
+                         Column('name', String, nullable=False),
+                         Column('strand', Integer, nullable=False),
+                         Column('start', Integer, nullable=False),
+                         Column('end', Integer, nullable=False),
+                         Column('feature', String, nullable=False),
+                         Column('sequence', String, nullable=False),
                          sqlite_autoincrement=True
 )
 
