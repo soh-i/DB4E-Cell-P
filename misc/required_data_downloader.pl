@@ -18,10 +18,12 @@ sub _downloader {
     my $out_file_name = shift;
     
     my $content = get($url);
-    open my $fh, '>', $out_file_name or die "Can not open file:$!";
+    open my $fh, '>', '../data/' . $out_file_name or die "Can not open file:$!";
     print $fh $content;
     close $fh;
+    print STDERR "Finished downloading $out_file_name...\n";
 }
+
 
     
     
