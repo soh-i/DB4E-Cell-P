@@ -7,6 +7,11 @@
 # emacs
 *~
 
+# DB
+*.db
+*.sqlite3
+*.sqlite
+
 # MacOS
 .DS_Store
 
