@@ -15,5 +15,8 @@
 # MacOS
 .DS_Store
 
+# conf
+conf.ini
+
 <<<<<<< HEAD
 >>>>>>> versioncheck
