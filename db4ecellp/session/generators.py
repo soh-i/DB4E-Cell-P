@@ -60,6 +60,7 @@ class Genbank(DataInitializer):
         
     def generate_genbank_file(self):
         self.is_valid_file(self.GENBANK_FILE)
+        
         # if exist previous generated files, just remove it
         self.clean_up_data(
             self.CDS_OUT,
@@ -114,8 +115,6 @@ class Promoter(DataInitializer):
         DataInitializer.__init__(self, conf)
 
     def generate_promoter_file(self):
-        #promoter_file = self.query_file_by_format("Promoter")
-        
         output_file = open(self.PROMOTOR_OUT, 'w');
         
         for line in open(self.PROMOTER_FILE, 'r'):
