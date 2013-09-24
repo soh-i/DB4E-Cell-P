@@ -9,12 +9,15 @@ from sqlalchemy import *
 from sqlalchemy.orm import mapper, sessionmaker
 
 
-metadata = MetaData()
 
+metadata = MetaData()
 class Species(object):
+    
     __tablename__ = 'species'
     
     def __init__(self, name, strand, start, end, feature, sequence):
+        
+        
         self.name = name
         self.strand = int(strand)
         self.start = int(start)
