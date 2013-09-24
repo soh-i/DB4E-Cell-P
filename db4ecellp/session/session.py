@@ -35,7 +35,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
             self.reflection = False
             print "DB[%s] is NOT exist" % (self.DB_PATH)
         
-        if self.reflection == False:
+        if not self.reflection:
             print "Reflection is OFF"
             
             self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
@@ -44,7 +44,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
             self.Session.configure(bind=self.engine)
             self.session = self.Session()
             
-        elif self.reflection == True:
+        elif self.reflection:
             print "Reflection is ON"
             
             self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
