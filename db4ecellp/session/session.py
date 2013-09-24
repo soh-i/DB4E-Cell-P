@@ -11,32 +11,36 @@ from species import species
 from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-import os.path
+from os.path import isfile
 from os import remove
 
 
 class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
     def __init__(self, conf):
         Genbank.__init__(self, conf)
-        
-        self.generate_genbank_file()
-        self.generate_terminator_file()
-        self.generate_promoter_file()
-        #self.generate_operon_file() #Not Implemented
-        #self.generate_gene_promoter_interaction_file() #Not Implemented
 
-        self.reflection = None
-        
+        if not isfile(self.CDS_OUT) and \
+           not isfile(self.tRNA) and \
+           not isfile(self.rRNA_OUT) and \
+           not isfile(self.PROMOTOR_OUT) and \
+           not isfile(self.TERMINATOR_OUT):
+            
+            self.generate_genbank_file()
+            self.generate_terminator_file()
+            self.generate_promoter_file()
+            #self.generate_operon_file() #Not Implemented
+            #self.generate_gene_promoter_interaction_file() #Not Implemented
+
         if os.path.isfile(self.DB_PATH):
             self.reflection = True
-            print "DB[%s] is exist" % (self.DB_PATH)
+            #print "DB[%s] is exist" % (self.DB_PATH)
                         
         else:
             self.reflection = False
-            print "DB[%s] is NOT exist" % (self.DB_PATH)
+            #print "DB[%s] is NOT exist" % (self.DB_PATH)
         
         if not self.reflection:
-            print "Reflection is OFF"
+            #print "Reflection is OFF"
             
             self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
             species.metadata.create_all(self.engine)
@@ -45,8 +49,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
             self.session = self.Session()
             
         elif self.reflection:
-            print "Reflection is ON"
-            
+            #print "Reflection is ON"
             self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
             metadata = MetaData(bind=self.engine)
             # database reflection 
@@ -99,8 +102,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
 
     def generate_db(self):
         if not self.reflection:
-            print "Generating DB..."
-            
+            #print "Generating DB..."
             self.__mapping_CDS()
             self.__mapping_tRNA()
             self.__mapping_rRNA()
@@ -108,7 +110,8 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
             self.__mapping_terminater()
             
         elif self.reflection:
-            print "Use database reflection..."
+            pass
+            #print "Use database reflection..."
             
 
 class QueryBuilder(Mapper):
