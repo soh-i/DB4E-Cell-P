@@ -18,21 +18,42 @@ from os import remove
 class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
     def __init__(self, conf):
         Genbank.__init__(self, conf)
+        
         self.generate_genbank_file()
         self.generate_terminator_file()
         self.generate_promoter_file()
         #self.generate_operon_file() #Not Implemented
         #self.generate_gene_promoter_interaction_file() #Not Implemented
+
+        self.reflection = None
         
         if os.path.isfile(self.DB_PATH):
-            os.remove(self.DB_PATH)
+            self.reflection = True
+            print "DB[%s] is exist" % (self.DB_PATH)
+                        
+        else:
+            self.reflection = False
+            print "DB[%s] is NOT exist" % (self.DB_PATH)
+        
+        if self.reflection == False:
+            print "Reflection is OFF"
             
-        self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
-        species.metadata.create_all(self.engine)
-        self.Session = species.sessionmaker()
-        self.Session.configure(bind=self.engine)
-        self.session = self.Session()
-
+            self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
+            species.metadata.create_all(self.engine)
+            self.Session = species.sessionmaker()
+            self.Session.configure(bind=self.engine)
+            self.session = self.Session()
+            
+        elif self.reflection == True:
+            print "Reflection is ON"
+            
+            self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
+            metadata = MetaData(bind=self.engine)
+            # database reflection 
+            metadata.reflect(bind=self.engine)
+            self.Session = sessionmaker(bind=self.engine)
+            self.session = self.Session()
+            
     def __destroy_DB(self):
         self.session.delete()
 
@@ -77,12 +98,18 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def generate_db(self):
-        self.__mapping_CDS()
-        self.__mapping_tRNA()
-        self.__mapping_rRNA()
-        self.__mapping_promoter()
-        self.__mapping_terminater()
-
+        if not self.reflection:
+            print "Generating DB..."
+            
+            self.__mapping_CDS()
+            self.__mapping_tRNA()
+            self.__mapping_rRNA()
+            self.__mapping_promoter()
+            self.__mapping_terminater()
+            
+        elif self.reflection:
+            print "Use database reflection..."
+            
 
 class QueryBuilder(Mapper):
 
@@ -90,7 +117,7 @@ class QueryBuilder(Mapper):
         self.conf = conf
         Mapper.__init__(self, self.conf)
         self.generate_db()
-        
+                
     def count_stored_records(self):
         return self.session.query(species.CDS).filter(species.CDS.start).count()
 
