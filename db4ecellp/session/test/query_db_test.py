@@ -1,11 +1,15 @@
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
+
 import sys
-sys.path.append('../')
+sys.path.append('../species')
+from species import Species, CDS, tRNA, rRNA, Promoter, Terminator
 
-from session import QueryBuilder
+engine = create_engine('sqlite:///test.db', echo=False)
+metadata = MetaData(bind=engine)
+metadata.reflect() # use reflection
 
-conf = '../../../conf.ini'
-q = QueryBuilder(conf)
-print q.include_gene_in_region(3390, 8000)
+Session = sessionmaker(bind=engine)
+session = Session()
 
-
-
+print session.query(CDS).filter_by(name="thrL").all()
