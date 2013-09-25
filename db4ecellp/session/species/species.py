@@ -8,10 +8,9 @@ __license__ = ''
 from sqlalchemy import *
 from sqlalchemy.orm import mapper, sessionmaker
 
-
 metadata = MetaData()
-
 class Species(object):
+    
     __tablename__ = 'species'
     
     def __init__(self, name, strand, start, end, feature, sequence):
