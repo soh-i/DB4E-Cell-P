@@ -35,9 +35,6 @@ class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
             self.generate_terminator_file()
 
             # self.generate_promoter_file()
-            gen = generator2.PromoterDecGenerator(self.PROMOTER_FILE)
-            gen.generate(self.PROMOTER_OUT)
-
             #self.generate_operon_file() #Not Implemented
             #self.generate_gene_promoter_interaction_file() #Not Implemented
 
@@ -96,13 +93,17 @@ class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_promoter(self):
-        with open(self.PROMOTER_OUT, 'r') as f:
-            for line in f:
-                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species2.PromoterDec(name, strand, start, end, feature, sequence)
-                # obj = species.Promoter(name, strand, start, end, feature, sequence)
-                self.session.add(obj)
-        self.session.commit()
+        gen = generator2.PromoterDecGenerator(
+            self.PROMOTER_FILE, self.PROMOTER_OUT)
+        gen.generate(self.session)
+
+        # with open(self.PROMOTER_OUT, 'r') as f:
+        #     for line in f:
+        #         (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+        #         obj = species2.PromoterDec(name, strand, start, end, feature, sequence)
+        #         # obj = species.Promoter(name, strand, start, end, feature, sequence)
+        #         self.session.add(obj)
+        # self.session.commit()
 
     def __mapping_terminater(self):
         with open(self.TERMINATOR_OUT, 'r') as f:
