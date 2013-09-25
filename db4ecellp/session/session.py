@@ -8,28 +8,36 @@ import sys
 import os
 
 from species import species
-from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
+# from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
+from generators import Genbank, Terminator, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from os.path import isfile
 from os import remove
 
 import species2
+import generator2
 
 
-class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
+# class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
+class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
+
     def __init__(self, conf):
         Genbank.__init__(self, conf)
 
-        if not isfile(self.CDS_OUT) and \
-           not isfile(self.tRNA) and \
-           not isfile(self.rRNA_OUT) and \
-           not isfile(self.PROMOTOR_OUT) and \
-           not isfile(self.TERMINATOR_OUT):
-            
+        # if not isfile(self.CDS_OUT) and \
+        #    not isfile(self.tRNA) and \
+        #    not isfile(self.rRNA_OUT) and \
+        #    not isfile(self.PROMOTER_OUT) and \
+        #    not isfile(self.TERMINATOR_OUT):
+        if True:
             self.generate_genbank_file()
             self.generate_terminator_file()
-            self.generate_promoter_file()
+
+            # self.generate_promoter_file()
+            gen = generator2.PromoterDecGenerator(self.PROMOTER_FILE)
+            gen.generate(self.PROMOTER_OUT)
+
             #self.generate_operon_file() #Not Implemented
             #self.generate_gene_promoter_interaction_file() #Not Implemented
 
@@ -88,11 +96,10 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_promoter(self):
-        with open(self.PROMOTOR_OUT, 'r') as f:
+        with open(self.PROMOTER_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
                 obj = species2.PromoterDec(name, strand, start, end, feature, sequence)
-                print obj
                 # obj = species.Promoter(name, strand, start, end, feature, sequence)
                 self.session.add(obj)
         self.session.commit()

@@ -37,7 +37,7 @@ class DataInitializer(object):
         self.CDS_OUT        = APP_ROOT + conf.get('output_data', 'cds')
         self.rRNA_OUT       = APP_ROOT + conf.get('output_data', 'rrna')
         self.tRNA_OUT       = APP_ROOT + conf.get('output_data', 'trna')
-        self.PROMOTOR_OUT   = APP_ROOT + conf.get('output_data', 'promoter')
+        self.PROMOTER_OUT   = APP_ROOT + conf.get('output_data', 'promoter')
         self.TERMINATOR_OUT = APP_ROOT + conf.get('output_data', 'terminator')
     
         # DB
@@ -66,7 +66,7 @@ class Genbank(DataInitializer):
             self.CDS_OUT,
             self.rRNA_OUT,
             self.tRNA_OUT,
-            self.PROMOTOR_OUT,
+            self.PROMOTER_OUT,
             self.TERMINATOR_OUT
         )
         
@@ -109,31 +109,31 @@ class Genbank(DataInitializer):
                     trna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
 
 
-class Promoter(DataInitializer):
-    
-    def __init__(self, conf):
-        DataInitializer.__init__(self, conf)
-
-    def generate_promoter_file(self):
-        output_file = open(self.PROMOTOR_OUT, 'w');
-        
-        for line in open(self.PROMOTER_FILE, 'r'):
-            if (line.isspace()):
-                continue
-
-            line = line.rstrip()
-            if not re.match('^#',line):
-                lineArray = line.split("\t")
-            
-                if not len(lineArray) == 7 :
-                    continue
-
-                if lineArray[2] in "forward":
-                    text = "\t".join([ lineArray[0],"1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
-                    output_file.write(text + "\n")
-                else:
-                    text = "\t".join([ lineArray[0],"-1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
-                    output_file.write(text + "\n")
+# class Promoter(DataInitializer):
+#     
+#     def __init__(self, conf):
+#         DataInitializer.__init__(self, conf)
+# 
+#     def generate_promoter_file(self):
+#         output_file = open(self.PROMOTER_OUT, 'w');
+#         
+#         for line in open(self.PROMOTER_FILE, 'r'):
+#             if (line.isspace()):
+#                 continue
+# 
+#             line = line.rstrip()
+#             if not re.match('^#',line):
+#                 lineArray = line.split("\t")
+#             
+#                 if not len(lineArray) == 7 :
+#                     continue
+# 
+#                 if lineArray[2] in "forward":
+#                     text = "\t".join([ lineArray[0],"1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
+#                     output_file.write(text + "\n")
+#                 else:
+#                     text = "\t".join([ lineArray[0],"-1",lineArray[3],lineArray[3],"promoter",lineArray[5] ])
+#                     output_file.write(text + "\n")
 
 
 class Terminator(DataInitializer):
