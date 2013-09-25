@@ -23,8 +23,8 @@ def test():
     #print q.count_stored_records()
     #print q.collect_cds_records()[-1]
     #print q.collect_all_gene_name()[-1]
-    #print q.collect_annotations_filter_by_strand(-1)[-1]
-    print q.find_by_name("thrL")
+    print q.collect_annotations_filter_by_strand(-1)[-1]
+    #print q.find_by_name("thrL")
     #print q.include_gene_in_region(50000,60000)[0]
     #print q.include_record_in_region(50000, 60000)[0]
     #print q.include_seq_in_region(2032,9059)[-1][1]
