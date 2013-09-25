@@ -53,60 +53,60 @@ class DataInitializer(object):
                 os.remove(f)
 
 
-class Genbank(DataInitializer):
-    
-    def __init__(self, conf):
-        DataInitializer.__init__(self, conf)
-        
-    def generate_genbank_file(self):
-        self.is_valid_file(self.GENBANK_FILE)
-        
-        # if exist previous generated files, just remove it
-        self.clean_up_data(
-            self.CDS_OUT,
-            self.rRNA_OUT,
-            self.tRNA_OUT,
-            self.PROMOTER_OUT,
-            self.TERMINATOR_OUT
-        )
-        
-        handle = open(self.GENBANK_FILE, 'r')
-        cds_f  = open(self.CDS_OUT, 'a')
-        rrna_f = open(self.rRNA_OUT, 'a')
-        trna_f = open(self.tRNA_OUT, 'a')
-        
-        for record in SeqIO.parse(handle, 'genbank'):
-            for feature in record.features:
-                if feature.type == 'CDS':
-                    if not 'pseudo' in feature.qualifiers and 'gene' in feature.qualifiers:
-                        gene = feature.qualifiers['gene'][0]
-                        start = feature.location.start
-                        end = feature.location.end
-                        strand = int(feature.location.strand)
-                        seq = record.seq[start:end]
-                        feature = feature.type
-                    
-                        cds_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
-                        
-                elif feature.type == 'rRNA':
-                    gene = feature.qualifiers['gene'][0]
-                    start = feature.location.start
-                    end = feature.location.end
-                    strand = int(feature.location.strand)
-                    seq = record.seq[start:end]
-                    feature = feature.type
-                    
-                    rrna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
-                        
-                elif feature.type == 'tRNA':
-                    gene = feature.qualifiers['gene'][0]
-                    start = feature.location.start
-                    end = feature.location.end
-                    strand = int(feature.location.strand)
-                    seq = record.seq[start:end]
-                    feature = feature.type
-
-                    trna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
+# class Genbank(DataInitializer):
+#     
+#     def __init__(self, conf):
+#         DataInitializer.__init__(self, conf)
+#         
+#     def generate_genbank_file(self):
+#         self.is_valid_file(self.GENBANK_FILE)
+#         
+#         # if exist previous generated files, just remove it
+#         self.clean_up_data(
+#             self.CDS_OUT,
+#             self.rRNA_OUT,
+#             self.tRNA_OUT,
+#             self.PROMOTER_OUT,
+#             self.TERMINATOR_OUT
+#         )
+#         
+#         handle = open(self.GENBANK_FILE, 'r')
+#         cds_f  = open(self.CDS_OUT, 'a')
+#         rrna_f = open(self.rRNA_OUT, 'a')
+#         trna_f = open(self.tRNA_OUT, 'a')
+#         
+#         for record in SeqIO.parse(handle, 'genbank'):
+#             for feature in record.features:
+#                 if feature.type == 'CDS':
+#                     if not 'pseudo' in feature.qualifiers and 'gene' in feature.qualifiers:
+#                         gene = feature.qualifiers['gene'][0]
+#                         start = feature.location.start
+#                         end = feature.location.end
+#                         strand = int(feature.location.strand)
+#                         seq = record.seq[start:end]
+#                         feature = feature.type
+#                     
+#                         cds_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
+#                         
+#                 elif feature.type == 'rRNA':
+#                     gene = feature.qualifiers['gene'][0]
+#                     start = feature.location.start
+#                     end = feature.location.end
+#                     strand = int(feature.location.strand)
+#                     seq = record.seq[start:end]
+#                     feature = feature.type
+#                     
+#                     rrna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
+#                         
+#                 elif feature.type == 'tRNA':
+#                     gene = feature.qualifiers['gene'][0]
+#                     start = feature.location.start
+#                     end = feature.location.end
+#                     strand = int(feature.location.strand)
+#                     seq = record.seq[start:end]
+#                     feature = feature.type
+# 
+#                     trna_f.write("%s\t%d\t%s\t%s\t%s\t%s\n" % (gene, strand, start, end, feature, seq))
 
 class Operon(DataInitializer):
     def __init__(self):

@@ -8,6 +8,9 @@ class BaseDec(Base):
     __tablename__ = 'base'
     __table_args__ = {'sqlite_autoincrement': True}
 
+    dectype = Column(String, nullable=False)
+    __mapper_args__ = {'polymorphic_on': dectype}
+
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     strand = Column(Integer, nullable=False)

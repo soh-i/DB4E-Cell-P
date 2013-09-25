@@ -8,7 +8,7 @@ def query_test():
     # create Mapper class object (generating DB)
     data = './conf.ini'
     query = db4ecellp.QueryBuilder(data)
-    
+
     print query.count_stored_records()
     #print query.collect_cds_records()
     print query.find_by_name('thrL')

@@ -9,29 +9,30 @@ import os
 
 from species import species
 # from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
-from generators import Genbank, Operon, GenePromoterInteraction
+from generators import DataInitializer, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from os.path import isfile
 from os import remove
 
 import species2
+import genbank_generator
 import regulondb_generator
 
 
 # class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
-class Mapper(Genbank, Operon, GenePromoterInteraction):
+class Mapper(Operon, GenePromoterInteraction):
 
     def __init__(self, conf):
-        Genbank.__init__(self, conf)
+        DataInitializer.__init__(self, conf)
 
         # if not isfile(self.CDS_OUT) and \
         #    not isfile(self.tRNA) and \
         #    not isfile(self.rRNA_OUT) and \
         #    not isfile(self.PROMOTER_OUT) and \
         #    not isfile(self.TERMINATOR_OUT):
-        if True:
-            self.generate_genbank_file()
+        # if True:
+            # self.generate_genbank_file()
             # self.generate_terminator_file()
             # self.generate_promoter_file()
             #self.generate_operon_file() #Not Implemented
@@ -67,29 +68,33 @@ class Mapper(Genbank, Operon, GenePromoterInteraction):
     def __destroy_DB(self):
         self.session.delete()
 
-    def __mapping_CDS(self):
-        with open(self.CDS_OUT, 'r') as f:
-            for line in f:
-                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.CDS(name, strand, start, end, feature, sequence)
-                self.session.add(obj)
-        self.session.commit()
+    # def __mapping_CDS(self):
+    #     with open(self.CDS_OUT, 'r') as f:
+    #         for line in f:
+    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+    #             obj = species.CDS(name, strand, start, end, feature, sequence)
+    #             self.session.add(obj)
+    #     self.session.commit()
 
-    def __mapping_tRNA(self):
-        with open(self.tRNA_OUT, 'r') as f:
-            for line in f:
-                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.tRNA(name, strand, start, end, feature, sequence)
-                self.session.add(obj)
-        self.session.commit()
+    # def __mapping_tRNA(self):
+    #     with open(self.tRNA_OUT, 'r') as f:
+    #         for line in f:
+    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+    #             obj = species.tRNA(name, strand, start, end, feature, sequence)
+    #             self.session.add(obj)
+    #     self.session.commit()
 
-    def __mapping_rRNA(self):
-        with open(self.rRNA_OUT, 'r') as f:
-            for line in f:
-                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.tRNA(name, strand, start, end, feature, sequence)
-                self.session.add(obj)
-        self.session.commit()
+    # def __mapping_rRNA(self):
+    #     with open(self.rRNA_OUT, 'r') as f:
+    #         for line in f:
+    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
+    #             obj = species.tRNA(name, strand, start, end, feature, sequence)
+    #             self.session.add(obj)
+    #     self.session.commit()
+
+    def __mapping_genbank(self):
+        gen = genbank_generator.GenbankDecGenerator(self.GENBANK_FILE)
+        gen.generate(self.session)
 
     def __mapping_promoter(self):
         gen = regulondb_generator.RegulonDBPromoterDecGenerator(
@@ -104,9 +109,10 @@ class Mapper(Genbank, Operon, GenePromoterInteraction):
     def generate_db(self):
         if not self.reflection:
             #print "Generating DB..."
-            self.__mapping_CDS()
-            self.__mapping_tRNA()
-            self.__mapping_rRNA()
+            # self.__mapping_CDS()
+            # self.__mapping_tRNA()
+            # self.__mapping_rRNA()
+            self.__mapping_genbank()
             self.__mapping_promoter()
             self.__mapping_terminater()
             
@@ -123,28 +129,28 @@ class QueryBuilder(Mapper):
         self.generate_db()
                 
     def count_stored_records(self):
-        return self.session.query(species.CDS).filter(species.CDS.start).count()
+        return self.session.query(species2.CDSDec).filter(species2.CDSDec.start).count()
 
     def collect_cds_records(self):
         all_rec = []
-        for row in self.session.query(species.CDS).all():
+        for row in self.session.query(species2.CDSDec).all():
             all_rec.append(row)
         return all_rec
         
     def collect_all_gene_name(self):
         names = []
-        for record in self.session.query(species.CDS).order_by(species.CDS.name):
+        for record in self.session.query(species2.CDSDec).order_by(species2.CDSDec.name):
             names.append(record.name)
         return names
 
     def find_by_name(self, gene_name):
-        for rec in self.session.query(species.CDS).filter_by(name=gene_name):
+        for rec in self.session.query(species2.CDSDec).filter_by(name=gene_name):
             return rec
             
     def collect_annotations_filter_by_strand(self, strand):
         filt_recs = []
         if strand == 1 or strand == -1:
-            for rec in self.session.query(species.CDS).filter_by(strand=strand):
+            for rec in self.session.query(species2.CDSDec).filter_by(strand=strand):
                 filt_recs.append(rec)
             return filt_recs
         else:
@@ -152,19 +158,20 @@ class QueryBuilder(Mapper):
             
     def include_record_in_region(self, start, end):
         records = []
-        for record in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
+        for record in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
             records.append(record)
         return records
 
     def include_gene_in_region(self, start, end):
         genes = []
-        for gene in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
-            genes.append(gene.name)
+        for gene in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
+            # genes.append(gene.name)
+            genes.append(gene)
         return genes
         
     def include_seq_in_region(self, start, end):
         seq = []
-        for s in self.session.query(species.CDS).filter(species.CDS.start.between(start, end)):
+        for s in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
             seq.append(s.sequence)
         return seq
 
