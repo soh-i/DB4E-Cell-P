@@ -9,7 +9,7 @@ import os
 
 from species import species
 # from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
-from generators import Genbank, Terminator, Operon, GenePromoterInteraction
+from generators import Genbank, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 from os.path import isfile
@@ -20,7 +20,7 @@ import generator2
 
 
 # class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
-class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
+class Mapper(Genbank, Operon, GenePromoterInteraction):
 
     def __init__(self, conf):
         Genbank.__init__(self, conf)
@@ -32,8 +32,7 @@ class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
         #    not isfile(self.TERMINATOR_OUT):
         if True:
             self.generate_genbank_file()
-            self.generate_terminator_file()
-
+            # self.generate_terminator_file()
             # self.generate_promoter_file()
             #self.generate_operon_file() #Not Implemented
             #self.generate_gene_promoter_interaction_file() #Not Implemented
@@ -93,25 +92,12 @@ class Mapper(Genbank, Terminator, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_promoter(self):
-        gen = generator2.PromoterDecGenerator(
-            self.PROMOTER_FILE, self.PROMOTER_OUT)
+        gen = generator2.PromoterDecGenerator(self.PROMOTER_FILE)
         gen.generate(self.session)
 
-        # with open(self.PROMOTER_OUT, 'r') as f:
-        #     for line in f:
-        #         (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-        #         obj = species2.PromoterDec(name, strand, start, end, feature, sequence)
-        #         # obj = species.Promoter(name, strand, start, end, feature, sequence)
-        #         self.session.add(obj)
-        # self.session.commit()
-
     def __mapping_terminater(self):
-        with open(self.TERMINATOR_OUT, 'r') as f:
-            for line in f:
-                (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.Terminator(name, strand, start, end, feature, sequence)
-                self.session.add(obj)
-        self.session.commit()
+        gen = generator2.PromoterDecGenerator(self.TERMINATOR_FILE)
+        gen.generate(self.session)
 
     def generate_db(self):
         if not self.reflection:

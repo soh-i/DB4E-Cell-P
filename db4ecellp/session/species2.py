@@ -34,8 +34,32 @@ class BaseDec(Base):
                     self.__class__.__module__, self.__class__.__name__,
                     ", ".join([str(value) for value in self.values()]))
 
+class CDSDec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'cds'}
+
+    def __init__(self, *args):
+        super(CDSDec, self).__init__(*args)
+
+class tRNADec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'trna'}
+
+    def __init__(self, *args):
+        super(tRNADec, self).__init__(*args)
+
+class rRNADec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'rrna'}
+
+    def __init__(self, *args):
+        super(rRNADec, self).__init__(*args)
+
 class PromoterDec(BaseDec):
     __mapper_args__ = {'polymorphic_identity': 'promoter'}
 
     def __init__(self, *args):
         super(PromoterDec, self).__init__(*args)
+
+class TerminatorDec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'terminator'}
+
+    def __init__(self, *args):
+        super(TerminatorDec, self).__init__(*args)
