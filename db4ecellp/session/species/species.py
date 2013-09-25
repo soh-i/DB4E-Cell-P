@@ -84,20 +84,20 @@ rrna_table = Table('rrna', metadata,
                    sqlite_autoincrement=True
 )
 
-class Promoter(Species):
-    def __init__(self, name, strand, start, end, feature, sequence):
-        Species.__init__(self, name, strand, start, end, feature, sequence)
-
-promoter_table = Table('promoter', metadata,
-                       Column('id',  Integer, primary_key=True),
-                       Column('name', String, nullable=False),
-                       Column('strand', Integer, nullable=False),
-                       Column('start', Integer, nullable=False),
-                       Column('end', Integer, nullable=False),
-                       Column('feature', String, nullable=False),
-                       Column('sequence', String, nullable=False),
-                       sqlite_autoincrement=True
-)
+# class Promoter(Species):
+#     def __init__(self, name, strand, start, end, feature, sequence):
+#         Species.__init__(self, name, strand, start, end, feature, sequence)
+# 
+# promoter_table = Table('promoter', metadata,
+#                        Column('id',  Integer, primary_key=True),
+#                        Column('name', String, nullable=False),
+#                        Column('strand', Integer, nullable=False),
+#                        Column('start', Integer, nullable=False),
+#                        Column('end', Integer, nullable=False),
+#                        Column('feature', String, nullable=False),
+#                        Column('sequence', String, nullable=False),
+#                        sqlite_autoincrement=True
+# )
 
 class Terminator(Species):
     def __init__(self, name, strand, start, end, feature, sequence):
@@ -118,5 +118,5 @@ mapper(Species, species_table)
 mapper(CDS, cds_table)
 mapper(tRNA, trna_table)
 mapper(rRNA, rrna_table)
-mapper(Promoter, promoter_table)
+# mapper(Promoter, promoter_table)
 mapper(Terminator, terminator_table)

@@ -4,8 +4,12 @@ E-Cell4 P: Database project for whole cell simulation in _E. coli_
 Providing generating database class and query/filter DB interfaces for running simulation model
 
 ## Installation
+
+sudo apt-get install libsqlite3-dev
+
 ### Install dependencies
 ```
+--install-option="--prefix=~/local"
 pip install -r requeirements.txt
 ```
 
@@ -24,7 +28,7 @@ APP_ROOT=/Users/yukke/dev/DB4E-Cell-P
 ```
 
 ## Running
-Sample code is `query_test.py` in `DB4E-Cell-P/db4ecellp` directory.
+Sample code is `query_test.py` in `db4ecellp` directory.
 
 ### Query genome sequence and annotations
 ```python

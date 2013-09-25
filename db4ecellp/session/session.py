@@ -14,6 +14,8 @@ from sqlalchemy.orm import sessionmaker
 from os.path import isfile
 from os import remove
 
+import species2
+
 
 class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
     def __init__(self, conf):
@@ -44,6 +46,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
             
             self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
             species.metadata.create_all(self.engine)
+            species2.Base.metadata.create_all(self.engine)
             self.Session = species.sessionmaker()
             self.Session.configure(bind=self.engine)
             self.session = self.Session()
@@ -88,7 +91,9 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         with open(self.PROMOTOR_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.tRNA(name, strand, start, end, feature, sequence)
+                obj = species2.PromoterDec(name, strand, start, end, feature, sequence)
+                print obj
+                # obj = species.Promoter(name, strand, start, end, feature, sequence)
                 self.session.add(obj)
         self.session.commit()
 
@@ -96,7 +101,7 @@ class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
         with open(self.TERMINATOR_OUT, 'r') as f:
             for line in f:
                 (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-                obj = species.tRNA(name, strand, start, end, feature, sequence)
+                obj = species.Terminator(name, strand, start, end, feature, sequence)
                 self.session.add(obj)
         self.session.commit()
 
