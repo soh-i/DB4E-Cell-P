@@ -4,7 +4,7 @@ import os.path
 import species2
 
 
-class PromoterDecGenerator(object):
+class RegulonDBPromoterDecGenerator(object):
 
     def __init__(self, filename):
         self.__filename = filename
@@ -35,7 +35,7 @@ class PromoterDecGenerator(object):
                 session.add(obj)
         session.commit()
 
-class TerminatorDecGenerator(object):
+class RegulonDBTerminatorDecGenerator(object):
 
     def __init__(self, filename):
         self.__filename = filename

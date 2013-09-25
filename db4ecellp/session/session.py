@@ -16,7 +16,7 @@ from os.path import isfile
 from os import remove
 
 import species2
-import generator2
+import regulondb_generator
 
 
 # class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
@@ -92,11 +92,13 @@ class Mapper(Genbank, Operon, GenePromoterInteraction):
         self.session.commit()
 
     def __mapping_promoter(self):
-        gen = generator2.PromoterDecGenerator(self.PROMOTER_FILE)
+        gen = regulondb_generator.RegulonDBPromoterDecGenerator(
+            self.PROMOTER_FILE)
         gen.generate(self.session)
 
     def __mapping_terminater(self):
-        gen = generator2.PromoterDecGenerator(self.TERMINATOR_FILE)
+        gen = regulondb_generator.RegulonDBPromoterDecGenerator(
+            self.TERMINATOR_FILE)
         gen.generate(self.session)
 
     def generate_db(self):
