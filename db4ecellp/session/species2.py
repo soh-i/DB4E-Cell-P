@@ -4,8 +4,9 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class PromoterDec(Base):
-    __tablename__ = 'promoter'
+class BaseDec(Base):
+    __tablename__ = 'base'
+    __table_args__ = {'sqlite_autoincrement': True}
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -32,3 +33,9 @@ class PromoterDec(Base):
         return "<%s.%s: %s>" % (
                     self.__class__.__module__, self.__class__.__name__,
                     ", ".join([str(value) for value in self.values()]))
+
+class PromoterDec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'promoter'}
+
+    def __init__(self, *args):
+        super(PromoterDec, self).__init__(*args)
