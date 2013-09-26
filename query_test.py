@@ -17,4 +17,5 @@ def query_test():
 
 
 if __name__ == '__main__':
+    print "test case"
     query_test()
