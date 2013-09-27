@@ -5,20 +5,12 @@ Providing generating database class and query/filter DB interfaces for running s
 
 ## Installation
 
-sudo apt-get install libsqlite3-dev
-
 ### Install dependencies
 ```
---install-option="--prefix=~/local"
-pip install -r requeirements.txt
+sudo apt-get install libsqlite3-dev
+
+pip install --install-option="--prefix=${PREFIX}" -r requeirements.txt
 ```
-
-### Required data
-Some required RegulonDB/refSeq dataset are able to download by `misc/required_data_downloader.pl`, then put those files into `data` directory.
-
-* NC_000913.gbk
-* PromoterSet.txt
-* TerminatorSet.txt
 
 ### Configuration file
 Add **absolute** project root path into `conf.ini`.
@@ -27,8 +19,17 @@ Add **absolute** project root path into `conf.ini`.
 APP_ROOT=/Users/yukke/dev/DB4E-Cell-P
 ```
 
+### Install the library
+```
+python setup.py install --prefix=${PREFIX}
+```
+
 ## Running
-Sample code is `query_test.py` in `db4ecellp` directory.
+Sample code is `query_test.py` in `samples` directory.
+
+```
+PYTHONPATH=${PREFIX}/lib/python2.7/site-packages python samples/query_test.py
+```
 
 ### Query genome sequence and annotations
 ```python
