@@ -7,127 +7,69 @@ __license__ = ''
 import sys
 import os
 
-from species import species
-# from generators import Genbank, Promoter, Terminator, Operon, GenePromoterInteraction
-from generators import DataInitializer, Operon, GenePromoterInteraction
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-from os.path import isfile
-from os import remove
+
+from generators import DataInitializer
 
 import species2
 import genbank_generator
 import regulondb_generator
 
 
-# class Mapper(Genbank, Promoter, Terminator, Operon, GenePromoterInteraction):
-class Mapper(Operon, GenePromoterInteraction):
+def generate_decs(mapper):
+    gen = genbank_generator.GenbankDecGenerator(mapper.GENBANK_FILE)
+    gen.generate(mapper.session)
+    gen = regulondb_generator.RegulonDBPromoterDecGenerator(
+        mapper.PROMOTER_FILE)
+    gen.generate(mapper.session)
+    gen = regulondb_generator.RegulonDBPromoterDecGenerator(
+        mapper.TERMINATOR_FILE)
+    gen.generate(mapper.session)
+
+class Mapper(DataInitializer):
 
     def __init__(self, conf):
         DataInitializer.__init__(self, conf)
 
-        # if not isfile(self.CDS_OUT) and \
-        #    not isfile(self.tRNA) and \
-        #    not isfile(self.rRNA_OUT) and \
-        #    not isfile(self.PROMOTER_OUT) and \
-        #    not isfile(self.TERMINATOR_OUT):
-        # if True:
-            # self.generate_genbank_file()
-            # self.generate_terminator_file()
-            # self.generate_promoter_file()
-            #self.generate_operon_file() #Not Implemented
-            #self.generate_gene_promoter_interaction_file() #Not Implemented
-
         if os.path.isfile(self.DB_PATH):
             self.reflection = True
-            #print "DB[%s] is exist" % (self.DB_PATH)
-                        
+            # print "DB[%s] is exist" % (self.DB_PATH)
         else:
             self.reflection = False
-            #print "DB[%s] is NOT exist" % (self.DB_PATH)
-        
+            # print "DB[%s] is NOT exist" % (self.DB_PATH)
+
+        self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
+
         if not self.reflection:
-            #print "Reflection is OFF"
-            
-            self.engine = species.create_engine('sqlite:///' + self.DB_PATH, echo=False)
-            species.metadata.create_all(self.engine)
+            # print "Reflection is OFF"
             species2.Base.metadata.create_all(self.engine)
-            self.Session = species.sessionmaker()
-            self.Session.configure(bind=self.engine)
-            self.session = self.Session()
-            
         elif self.reflection:
-            #print "Reflection is ON"
-            self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
+            # print "Reflection is ON"
             metadata = MetaData(bind=self.engine)
-            # database reflection 
             metadata.reflect(bind=self.engine)
-            self.Session = sessionmaker(bind=self.engine)
-            self.session = self.Session()
-            
+
+        maker = sessionmaker(bind=self.engine)
+        self.session = maker()
+
     def __destroy_DB(self):
         self.session.delete()
 
-    # def __mapping_CDS(self):
-    #     with open(self.CDS_OUT, 'r') as f:
-    #         for line in f:
-    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-    #             obj = species.CDS(name, strand, start, end, feature, sequence)
-    #             self.session.add(obj)
-    #     self.session.commit()
-
-    # def __mapping_tRNA(self):
-    #     with open(self.tRNA_OUT, 'r') as f:
-    #         for line in f:
-    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-    #             obj = species.tRNA(name, strand, start, end, feature, sequence)
-    #             self.session.add(obj)
-    #     self.session.commit()
-
-    # def __mapping_rRNA(self):
-    #     with open(self.rRNA_OUT, 'r') as f:
-    #         for line in f:
-    #             (name, strand, start, end, feature, sequence) = line[:-1].split("\t")
-    #             obj = species.tRNA(name, strand, start, end, feature, sequence)
-    #             self.session.add(obj)
-    #     self.session.commit()
-
-    def __mapping_genbank(self):
-        gen = genbank_generator.GenbankDecGenerator(self.GENBANK_FILE)
-        gen.generate(self.session)
-
-    def __mapping_promoter(self):
-        gen = regulondb_generator.RegulonDBPromoterDecGenerator(
-            self.PROMOTER_FILE)
-        gen.generate(self.session)
-
-    def __mapping_terminater(self):
-        gen = regulondb_generator.RegulonDBPromoterDecGenerator(
-            self.TERMINATOR_FILE)
-        gen.generate(self.session)
-
-    def generate_db(self):
+    def generate(self):
         if not self.reflection:
-            #print "Generating DB..."
-            # self.__mapping_CDS()
-            # self.__mapping_tRNA()
-            # self.__mapping_rRNA()
-            self.__mapping_genbank()
-            self.__mapping_promoter()
-            self.__mapping_terminater()
-            
+            # print "Generating DB..."
+            generate_decs(self)
         elif self.reflection:
+            # print "Use database reflection..."
             pass
-            #print "Use database reflection..."
-            
 
 class QueryBuilder(Mapper):
 
     def __init__(self, conf):
-        self.conf = conf
-        Mapper.__init__(self, self.conf)
-        self.generate_db()
-                
+        Mapper.__init__(self, conf)
+
+        self.generate()
+
     def count_stored_records(self):
         return self.session.query(species2.CDSDec).filter(species2.CDSDec.start).count()
 
@@ -136,7 +78,7 @@ class QueryBuilder(Mapper):
         for row in self.session.query(species2.CDSDec).all():
             all_rec.append(row)
         return all_rec
-        
+
     def collect_all_gene_name(self):
         names = []
         for record in self.session.query(species2.CDSDec).order_by(species2.CDSDec.name):
@@ -146,7 +88,7 @@ class QueryBuilder(Mapper):
     def find_by_name(self, gene_name):
         for rec in self.session.query(species2.CDSDec).filter_by(name=gene_name):
             return rec
-            
+
     def collect_annotations_filter_by_strand(self, strand):
         filt_recs = []
         if strand == 1 or strand == -1:
@@ -155,7 +97,7 @@ class QueryBuilder(Mapper):
             return filt_recs
         else:
             raise RuntimeError, "Invalid argument given [%d], must be -1 or 1" % (strand)
-            
+
     def include_record_in_region(self, start, end):
         records = []
         for record in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
@@ -168,11 +110,9 @@ class QueryBuilder(Mapper):
             # genes.append(gene.name)
             genes.append(gene)
         return genes
-        
+
     def include_seq_in_region(self, start, end):
         seq = []
         for s in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
             seq.append(s.sequence)
         return seq
-
-    
