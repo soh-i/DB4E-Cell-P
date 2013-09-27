@@ -33,8 +33,8 @@ PYTHONPATH=${PREFIX}/lib/python2.7/site-packages python samples/query_test.py
 
 ### Query genome sequence and annotations
 ```python
-from db4ecellp import db4ecellp
-query = db4ecellp.QueryBuilder('./conf.ini') # PATH TO conf.ini
+from ecellp import session
+query = session.QueryBuilder('./conf.ini') # PATH TO conf.ini
 
 print query.count_stored_records()
 #=> 4145
