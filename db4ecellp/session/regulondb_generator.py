@@ -1,13 +1,22 @@
 import re
 import os.path
 
+import utils
 import species2
 
 
 class RegulonDBPromoterDecGenerator(object):
 
     def __init__(self, filename):
+        self.__url = ("http://regulondb.ccg.unam.mx/"
+            "menu/download/datasets/files/PromoterSet.txt")
         self.__filename = filename
+
+    def setup(self):
+        if os.path.isfile(self.__filename):
+            return True
+        else:
+            return utils.fetch_url(self.__url, self.__filename)
 
     def reformat(self, data):
         if data[2] in "forward":
@@ -16,6 +25,9 @@ class RegulonDBPromoterDecGenerator(object):
             return (data[0], "-1", data[3], data[3], "promoter", data[5])
 
     def generate(self, session):
+        if not self.setup():
+            raise RuntimeError, "File [%s] not found." % (self.__filename)
+
         with open(self.__filename, "r") as fin:
             while True:
                 line = fin.readline()
@@ -38,7 +50,15 @@ class RegulonDBPromoterDecGenerator(object):
 class RegulonDBTerminatorDecGenerator(object):
 
     def __init__(self, filename):
+        self.__url = ("http://regulondb.ccg.unam.mx/"
+            "menu/download/datasets/files/TerminatorSet.txt")
         self.__filename = filename
+
+    def setup(self):
+        if os.path.isfile(self.__filename):
+            return True
+        else:
+            return utils.fetch_url(self.__url, self.__filename)
 
     def reformat(self, data):
         if data[3] in "forward":
@@ -47,6 +67,9 @@ class RegulonDBTerminatorDecGenerator(object):
             return (data[0], "-1", data[1], data[2], "terminator", data[4])
 
     def generate(self, session):
+        if not self.setup():
+            raise RuntimeError, "File [%s] not found." % (self.__filename)
+
         with open(self.__input_filename, "r") as fin:
             while True:
                 line = fin.readline()
