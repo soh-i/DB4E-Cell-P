@@ -27,15 +27,25 @@ class BaseDec(Base):
         self.feature = feature
         self.sequence = sequence
 
+    def keys(self):
+        return (
+            "name", "strand", "start", "end", "feature", "sequence")
+
     def values(self):
         return (
             self.name, self.strand, self.start, self.end,
             self.feature, self.sequence)
 
+    def as_dict(self):
+        retval = {}
+        for key, value in zip(self.keys(), self.values()):
+            retval[key] = value
+        return retval
+
     def __repr__(self):
         return "<%s.%s: %s>" % (
-                    self.__class__.__module__, self.__class__.__name__,
-                    ", ".join([str(value) for value in self.values()]))
+            self.__class__.__module__, self.__class__.__name__,
+            str(self.as_dict()))
 
 class CDSDec(BaseDec):
     __mapper_args__ = {'polymorphic_identity': 'cds'}
