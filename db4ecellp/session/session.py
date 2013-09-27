@@ -6,11 +6,10 @@ __license__ = ''
 
 import sys
 import os
+import ConfigParser
 
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
-
-from generators import DataInitializer
 
 import species2
 import genbank_generator
@@ -26,6 +25,47 @@ def generate_decs(mapper):
     gen = regulondb_generator.RegulonDBPromoterDecGenerator(
         mapper.TERMINATOR_FILE)
     gen.generate(mapper.session)
+
+path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(path)
+
+class DataInitializer(object):
+
+    def __init__(self, conf):
+        self.conf_filename = conf
+        if not os.path.isfile(self.conf_filename):
+            raise RuntimeError, "Configuration file [%s] is not found" % (
+                os.path.abspath(self.conf_filename))
+
+        conf = ConfigParser.RawConfigParser()
+        conf.read(self.conf_filename)
+        APP_ROOT = conf.get('root', 'APP_ROOT')
+
+        # Read input file
+        self.GENBANK_FILE    = APP_ROOT + conf.get('input_data', 'genbank')
+        self.PROMOTER_FILE   = APP_ROOT + conf.get('input_data', 'promoter')
+        self.TERMINATOR_FILE = APP_ROOT + conf.get('input_data', 'terminator')
+        self.GENOME_SEQUENCE = APP_ROOT + conf.get('input_data', 'sequence')
+
+        # Read output file
+        # self.CDS_OUT        = APP_ROOT + conf.get('output_data', 'cds')
+        # self.rRNA_OUT       = APP_ROOT + conf.get('output_data', 'rrna')
+        # self.tRNA_OUT       = APP_ROOT + conf.get('output_data', 'trna')
+        # self.PROMOTER_OUT   = APP_ROOT + conf.get('output_data', 'promoter')
+        # self.TERMINATOR_OUT = APP_ROOT + conf.get('output_data', 'terminator')
+
+        # DB
+        self.DB_PATH = APP_ROOT + conf.get('db', 'db_path')
+
+    def is_valid_file(self, filename):
+        if not os.path.isfile(filename):
+            raise IOError, "%s (wrote in %s) is not found" % (
+                filename, self.conf_filename)
+
+    def cleanup_data(self, *filenames):
+        for filename in filenames:
+            if os.path.isfile(filename):
+                os.remove(filename)
 
 class Mapper(DataInitializer):
 
