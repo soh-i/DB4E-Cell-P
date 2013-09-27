@@ -16,29 +16,29 @@ import genbank_generator
 import regulondb_generator
 
 
-def generate_decs(mapper):
-    gen = genbank_generator.GenbankDecGenerator(mapper.GENBANK_FILE)
-    gen.generate(mapper.session)
+def generate_decs(session, conf):
+    gen = genbank_generator.GenbankDecGenerator(conf.GENBANK_FILE)
+    gen.generate(session)
     gen = regulondb_generator.RegulonDBPromoterDecGenerator(
-        mapper.PROMOTER_FILE)
-    gen.generate(mapper.session)
+        conf.PROMOTER_FILE)
+    gen.generate(session)
     gen = regulondb_generator.RegulonDBPromoterDecGenerator(
-        mapper.TERMINATOR_FILE)
-    gen.generate(mapper.session)
+        conf.TERMINATOR_FILE)
+    gen.generate(session)
 
 path = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(path)
 
-class DataInitializer(object):
+class DBConfig(object):
 
-    def __init__(self, conf):
-        self.conf_filename = conf
-        if not os.path.isfile(self.conf_filename):
+    def __init__(self, filename):
+        self.__filename = filename
+        if not os.path.isfile(self.__filename):
             raise RuntimeError, "Configuration file [%s] is not found" % (
-                os.path.abspath(self.conf_filename))
+                os.path.abspath(self.__filename))
 
         conf = ConfigParser.RawConfigParser()
-        conf.read(self.conf_filename)
+        conf.read(self.__filename)
         APP_ROOT = conf.get('root', 'APP_ROOT')
 
         # Read input file
@@ -57,29 +57,36 @@ class DataInitializer(object):
         # DB
         self.DB_PATH = APP_ROOT + conf.get('db', 'db_path')
 
-    def is_valid_file(self, filename):
+    def is_valid(self, filename):
         if not os.path.isfile(filename):
             raise IOError, "%s (wrote in %s) is not found" % (
-                filename, self.conf_filename)
+                filename, self.__filename)
 
-    def cleanup_data(self, *filenames):
+    def cleanup(self):
+        # self.__cleanup(
+        #     self.CDS_OUT, self.rRNA_OUT, self.tRNA_OUT, self.PROMOTER_OUT,
+        #     self.TERMINATOR_OUT)
+        pass
+
+    def __cleanup(self, *filenames):
         for filename in filenames:
             if os.path.isfile(filename):
                 os.remove(filename)
 
-class Mapper(DataInitializer):
+class Mapper(object):
 
-    def __init__(self, conf):
-        DataInitializer.__init__(self, conf)
+    def __init__(self, filename):
+        self.conf = DBConfig(filename)
 
-        if os.path.isfile(self.DB_PATH):
+        if os.path.isfile(self.conf.DB_PATH):
             self.reflection = True
             # print "DB[%s] is exist" % (self.DB_PATH)
         else:
             self.reflection = False
             # print "DB[%s] is NOT exist" % (self.DB_PATH)
 
-        self.engine = create_engine('sqlite:///' + self.DB_PATH, echo=False)
+        self.engine = create_engine(
+            'sqlite:///' + self.conf.DB_PATH, echo=False)
 
         if not self.reflection:
             # print "Reflection is OFF"
@@ -98,15 +105,15 @@ class Mapper(DataInitializer):
     def generate(self):
         if not self.reflection:
             # print "Generating DB..."
-            generate_decs(self)
+            generate_decs(self.session, self.conf)
         elif self.reflection:
             # print "Use database reflection..."
             pass
 
 class QueryBuilder(Mapper):
 
-    def __init__(self, conf):
-        Mapper.__init__(self, conf)
+    def __init__(self, filename):
+        Mapper.__init__(self, filename)
 
         self.generate()
 
