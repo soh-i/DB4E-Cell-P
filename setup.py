@@ -11,5 +11,6 @@ setup(
     license='not yet',
     packages=find_packages('src'),
     package_dir={'': 'src'},
-    install_requires = ['biopython==1.62', 'sqlalchemy==0.8.2', 'pysqlite==2.6.3']
+    install_requires=['biopython==1.62', 'sqlalchemy==0.8.2', 'pysqlite==2.6.3'],
+    test_suite="ecellp.tests"
     )
