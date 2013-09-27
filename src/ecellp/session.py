@@ -11,7 +11,7 @@ import ConfigParser
 from sqlalchemy import *
 from sqlalchemy.orm import sessionmaker
 
-import species2
+import species
 import genbank_generator
 import regulondb_generator
 
@@ -90,7 +90,7 @@ class Mapper(object):
 
         if not self.reflection:
             # print "Reflection is OFF"
-            species2.Base.metadata.create_all(self.engine)
+            species.Base.metadata.create_all(self.engine)
         elif self.reflection:
             # print "Reflection is ON"
             metadata = MetaData(bind=self.engine)
@@ -118,28 +118,28 @@ class QueryBuilder(Mapper):
         self.generate()
 
     def count_stored_records(self):
-        return self.session.query(species2.CDSDec).filter(species2.CDSDec.start).count()
+        return self.session.query(species.CDSDec).filter(species.CDSDec.start).count()
 
     def collect_cds_records(self):
         all_rec = []
-        for row in self.session.query(species2.CDSDec).all():
+        for row in self.session.query(species.CDSDec).all():
             all_rec.append(row)
         return all_rec
 
     def collect_all_gene_name(self):
         names = []
-        for record in self.session.query(species2.CDSDec).order_by(species2.CDSDec.name):
+        for record in self.session.query(species.CDSDec).order_by(species.CDSDec.name):
             names.append(record.name)
         return names
 
     def find_by_name(self, gene_name):
-        for rec in self.session.query(species2.CDSDec).filter_by(name=gene_name):
+        for rec in self.session.query(species.CDSDec).filter_by(name=gene_name):
             return rec
 
     def collect_annotations_filter_by_strand(self, strand):
         filt_recs = []
         if strand == 1 or strand == -1:
-            for rec in self.session.query(species2.CDSDec).filter_by(strand=strand):
+            for rec in self.session.query(species.CDSDec).filter_by(strand=strand):
                 filt_recs.append(rec)
             return filt_recs
         else:
@@ -147,19 +147,19 @@ class QueryBuilder(Mapper):
 
     def include_record_in_region(self, start, end):
         records = []
-        for record in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
+        for record in self.session.query(species.CDSDec).filter(species.CDSDec.start.between(start, end)):
             records.append(record)
         return records
 
     def include_gene_in_region(self, start, end):
         genes = []
-        for gene in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
+        for gene in self.session.query(species.CDSDec).filter(species.CDSDec.start.between(start, end)):
             # genes.append(gene.name)
             genes.append(gene)
         return genes
 
     def include_seq_in_region(self, start, end):
         seq = []
-        for s in self.session.query(species2.CDSDec).filter(species2.CDSDec.start.between(start, end)):
+        for s in self.session.query(species.CDSDec).filter(species.CDSDec.start.between(start, end)):
             seq.append(s.sequence)
         return seq

@@ -3,7 +3,7 @@ import os
 
 from Bio import SeqIO
 
-import species2
+import species
 
 
 class GenbankDecGenerator(object):
@@ -26,7 +26,7 @@ class GenbankDecGenerator(object):
                             feature = feature.type
 
                             data = (name, strand, start, end, feature, seq)
-                            session.add(species2.CDSDec(*data))
+                            session.add(species.CDSDec(*data))
                     elif feature.type == 'rRNA':
                         name = feature.qualifiers['gene'][0]
                         start = int(feature.location.start)
@@ -36,7 +36,7 @@ class GenbankDecGenerator(object):
                         feature = feature.type
 
                         data = (name, strand, start, end, feature, seq)
-                        session.add(species2.rRNADec(*data))
+                        session.add(species.rRNADec(*data))
                     elif feature.type == 'tRNA':
                         name = feature.qualifiers['gene'][0]
                         start = int(feature.location.start)
@@ -46,5 +46,5 @@ class GenbankDecGenerator(object):
                         feature = feature.type
 
                         data = (name, strand, start, end, feature, seq)
-                        session.add(species2.tRNADec(*data))
+                        session.add(species.tRNADec(*data))
         session.commit()

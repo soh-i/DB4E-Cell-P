@@ -2,7 +2,7 @@ import re
 import os.path
 
 import utils
-import species2
+import species
 
 
 class RegulonDBPromoterDecGenerator(object):
@@ -43,7 +43,7 @@ class RegulonDBPromoterDecGenerator(object):
                     continue
 
                 # fout.write("%s\n" % ("\t".join(self.reformat(data))))
-                obj = species2.PromoterDec(*self.reformat(data))
+                obj = species.PromoterDec(*self.reformat(data))
                 session.add(obj)
         session.commit()
 
@@ -85,7 +85,7 @@ class RegulonDBTerminatorDecGenerator(object):
 
                 data = line.split("\t")
                 # fout.write("%s\n" % ("\t".join(self.reformat(data))))
-                obj = species2.TerminatorDec(*self.reformat(data))
+                obj = species.TerminatorDec(*self.reformat(data))
                 session.add(obj)
         session.commit()
 
@@ -123,7 +123,7 @@ class RegulonDBOperonDecGenerator(object):
                     continue
 
                 data = line.strip().split("\t")
-                obj = species2.OperonDec(*self.reformat(data))
+                obj = species.OperonDec(*self.reformat(data))
                 session.add(obj)
         session.commit()
 
