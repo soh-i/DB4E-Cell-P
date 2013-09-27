@@ -66,3 +66,9 @@ class TerminatorDec(BaseDec):
 
     def __init__(self, *args):
         super(TerminatorDec, self).__init__(*args)
+
+class OperonDec(BaseDec):
+    __mapper_args__ = {'polymorphic_identity': 'operon'}
+
+    def __init__(self, *args):
+        super(TerminatorDec, self).__init__(*args)

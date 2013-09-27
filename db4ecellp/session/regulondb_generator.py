@@ -65,3 +65,88 @@ class RegulonDBTerminatorDecGenerator(object):
                 obj = species2.TerminatorDec(*self.reformat(data))
                 session.add(obj)
         session.commit()
+
+class RegulonDBOperonDecGenerator(object):
+
+    def __init__(self, filename):
+        filename = 'data/OperonSet.txt'
+        self.__filename = filename
+
+    def reformat(self, data):
+        name = data[0]
+        start = int(data[1])
+        end  = int(data[2])
+        strand = data[3]
+        num_operon = int(data[4])
+        gene_name = data[5] #XXX
+        sequence = "" #XXX
+
+        if 'forward' in strand:
+            return (name, +1, start, end, "operon", sequence)
+        elif 'reverse' in strand:
+            return (name, -1, start, end, "operon", sequence)
+
+    def generate(self, session):
+        """This script generates the operon DB from OperonSet.txt,
+        input data was collected from web resource of the RegulonDB.
+        URL    : http://regulondb.ccg.unam.mx/menu/download/datasets/files/OperonSet.txt
+        OUTPUT : promoter_name    start    end    strand    gene_name(s)
+        """
+        header = "promoter_id\tstrand\tstart\tend\tfeature\tsequence"
+
+        with open(self.__filename, 'r') as fin:
+            for line in fin:
+                if line.startswith("#") or line.isspace():
+                    continue
+
+                data = line.strip().split("\t")
+                obj = species2.OperonDec(*self.reformat(data))
+                session.add(obj)
+        session.commit()
+
+class RegulonDBPromoterInteractionDecGenerator(object):
+    """This class should be integrated with RegulonDBOperonDecGenerator
+    in future."""
+
+    def __init__(self, filename):
+        filename = 'data/OperonSet.txt'
+        self.__filename = filename
+
+    def reformat(self, data):
+        name = data[0]
+        start = int(data[1])
+        end  = int(data[2])
+        strand = data[3]
+        num_operon = int(data[4])
+        gene_name = data[5] #XXX
+        sequence = "" #XXX
+
+        if 'forward' in strand:
+            return (name, +1, start, end, "operon", sequence)
+        elif 'reverse' in strand:
+            return (name, -1, start, end, "operon", sequence)
+
+    def generate(self, session):
+        """This script is used for generating promoter information per gene
+        DATA URL: http://regulondb.ccg.unam.mx/menu/download/datasets/files/OperonSet.txt
+        OUTPUT  : gene_name    strand    operon_id
+        """
+        gene_map = {}
+        with open(self.__filename, 'r') as fin:
+            for line in fin:
+                if line.startswith("#") or line.isspace():
+                    continue
+
+                data = line.strip().split("\t")
+                args = self.reformat(data)
+
+                operon_name = 'OPERON_' + args[0]
+                strand = args[1]
+                gene_names  = data[5]
+
+                genes = gene_names.split(",")
+                for gene in genes:
+                    gene_map.update(
+                        {gene : {'operon_id' : operon_name, 'strand' : strand}})
+
+        raise NotImplementedError, "not fully implemented yet."
