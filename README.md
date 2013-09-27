@@ -21,6 +21,8 @@ APP_ROOT=/Users/yukke/dev/DB4E-Cell-P
 
 ### Install the library
 ```
+python setup.py test
+
 python setup.py install --prefix=${PREFIX}
 ```
 
